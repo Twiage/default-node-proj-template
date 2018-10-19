@@ -1,11 +1,11 @@
 import sinon from 'sinon';
-import { MEDIA_SERVICE_PATH_V1_HEALTH, MEDIA_SERVICE_PATH_V1_STATUS } from '../../../core/urlPaths';
+import { PATH_V1_HEALTH, PATH_V1_STATUS } from '../../../core/urlPaths';
 
 describe('health.routes', () => {
   test('configure routes', () => {
     // Arrange
-    const expectedHealthUrl = MEDIA_SERVICE_PATH_V1_HEALTH;
-    const expectedStatusUrl = MEDIA_SERVICE_PATH_V1_STATUS;
+    const expectedHealthUrl = PATH_V1_HEALTH;
+    const expectedStatusUrl = PATH_V1_STATUS;
     const mockHealthRouteV1 = {
       get: jest.fn(() => mockHealthRouteV1),
     };

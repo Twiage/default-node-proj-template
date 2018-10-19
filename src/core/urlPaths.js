@@ -1,12 +1,13 @@
 /* eslint-disable import/prefer-default-export */
-const MEDIA_SERVICE_PATH_VERSION_1 = '/v1/';
-const MEDIA_SERVICE_PATH_HEALTH = 'health';
-const MEDIA_SERVICE_PATH_STATUS = 'status';
+const PROJECT_NAME = 'default-node-proj-template';
+const PATH_VERSION_1 = `/${PROJECT_NAME}/v1/`;
+const PATH_HEALTH = 'health';
+const PATH_STATUS = 'status';
 
-const MEDIA_SERVICE_PATH_ACS = 'auth/saml/consume';
+const PATH_ACS = 'auth/saml/consume';
 
 export const API_SIGNIN_PATH_BEARER = '/v3/';
 
-export const MEDIA_SERVICE_PATH_V1_HEALTH = `${MEDIA_SERVICE_PATH_VERSION_1}${MEDIA_SERVICE_PATH_HEALTH}`;
-export const MEDIA_SERVICE_PATH_ACS_V1 = `${MEDIA_SERVICE_PATH_VERSION_1}${MEDIA_SERVICE_PATH_ACS}`;
-export const MEDIA_SERVICE_PATH_V1_STATUS = `${MEDIA_SERVICE_PATH_VERSION_1}${MEDIA_SERVICE_PATH_STATUS}`;
+export const PATH_V1_HEALTH = `${PATH_VERSION_1}${PATH_HEALTH}`;
+export const PATH_ACS_V1 = `${PATH_VERSION_1}${PATH_ACS}`;
+export const PATH_V1_STATUS = `${PATH_VERSION_1}${PATH_STATUS}`;

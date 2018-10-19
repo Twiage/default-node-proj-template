@@ -1,12 +1,12 @@
 import test from 'ava';
 import { expect } from 'chai';
 import testutils from '../../../core/testing/test.utils';
-import { MEDIA_SERVICE_PATH_V1_HEALTH, MEDIA_SERVICE_PATH_V1_STATUS } from '../../../core/urlPaths';
+import { PATH_V1_HEALTH, PATH_V1_STATUS } from '../../../core/urlPaths';
 import { HEALTHY_RESPONSE_BODY, STATUS_RESPONSE_BODY } from '../controllers/HealthController';
 
 test.serial('Health Check', async () => {
   // Arrange
-  const expectedRoute = MEDIA_SERVICE_PATH_V1_HEALTH;
+  const expectedRoute = PATH_V1_HEALTH;
   const expectedJwtToken = '';
   const expectedResponse = HEALTHY_RESPONSE_BODY;
 
@@ -33,7 +33,7 @@ test.serial('Secure Health Check (status) - global admin', async () => {
   };
   const expectedResponse = STATUS_RESPONSE_BODY;
 
-  const expectedRoute = MEDIA_SERVICE_PATH_V1_STATUS;
+  const expectedRoute = PATH_V1_STATUS;
   const expectedExpress = testutils.setupExpress();
   testutils.setupJWTWithUser(expectedUser);
   testutils.setupRoute('../../modules/health/routes/health.routes', expectedExpress);
@@ -47,7 +47,7 @@ test.serial('Secure Health Check (status) - global admin', async () => {
 });
 
 
-const expectedRoute = MEDIA_SERVICE_PATH_V1_STATUS;
+const expectedRoute = PATH_V1_STATUS;
 const expectedMethod = 'GET';
 const { testCaseList } = testutils;
 

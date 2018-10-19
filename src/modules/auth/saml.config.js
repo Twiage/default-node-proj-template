@@ -1,7 +1,7 @@
 import { Strategy as SamlStrategy } from 'passport-saml';
 import passport from 'passport';
 import config from '../../config/config';
-import { MEDIA_SERVICE_PATH_ACS_V1 } from '../../core/urlPaths';
+import { PATH_ACS_V1 } from '../../core/urlPaths';
 import idpList from './idp.list';
 
 export default () => {
@@ -11,7 +11,7 @@ export default () => {
 };
 
 exports.getSamlStrategy = idp => new SamlStrategy({
-  callbackUrl: `${config.baseUrl}${MEDIA_SERVICE_PATH_ACS_V1}`,
+  callbackUrl: `${config.baseUrl}${PATH_ACS_V1}`,
   entryPoint: idp.entryPoint,
   issuer: idp.issuer,
   cert: idp.cert,
