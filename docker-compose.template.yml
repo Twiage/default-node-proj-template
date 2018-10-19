@@ -1,0 +1,25 @@
+version: '3'
+services:
+  default-node-proj-template:
+    ports:
+    - "3000:3000"
+    image: $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/default-node-proj-template:$CIRCLE_TAG
+    env_file:
+      - .env
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: $LOG_GROUP
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: default-node-proj-template
+  datadog:
+    image: datadog/agent:latest
+    environment:
+     - DD_API_KEY=$DD_API_KEY
+     - ECS_FARGATE=true
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: $LOG_GROUP
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: datadog

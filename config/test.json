@@ -1,0 +1,31 @@
+{
+  "twiage": {
+    "logging": {
+      "namespace": "twiage-logging",
+      "meta": {},
+      "headers": [],
+      "exitOnError": false,
+      "transports": [
+        {
+          "type": "File",
+          "opts": {
+            "filename": "test.log",
+            "level": "info",
+            "handleExceptions": false,
+            "json": false,
+            "colorize": false,
+            "timestamp": true,
+            "stringify": true,
+            "humanReadableUnhandledException": true
+          }
+        }
+      ]
+    }
+  },
+  "notifications": {
+    "pubNubMasterSlaveChannel": "test-Master_Slave_Channel"
+  },
+  "s3": {
+    "environmentFolder": "staging"
+  }
+}

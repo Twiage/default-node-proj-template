@@ -1,0 +1,12 @@
+{
+  "presets": [
+    "env",
+    "stage-0"
+  ],
+  "plugins": [
+    ["transform-async-to-generator"],
+    ["babel-plugin-root-import", {
+      "rootPathSuffix": "src/modules"
+    }]
+  ]
+}

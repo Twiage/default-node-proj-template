@@ -1,0 +1,12 @@
+.env
+.env.example
+.circleci
+node_modules
+docker-compose.template.yml
+docker-compose.yml
+README.md
+jest-unit-config.json
+.eslintrc
+.editorconfig
+.idea
+yarn-error.log

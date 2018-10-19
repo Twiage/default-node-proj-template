@@ -1,0 +1,13 @@
+[
+  {
+    "roles": "admin",
+    "allows": [
+      {
+        "resources": [
+          "/v1/status"
+        ],
+        "permissions": "get"
+      }
+    ]
+  }
+]

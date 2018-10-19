@@ -1,0 +1,36 @@
+{
+  "twiage": {
+    "logging": {
+      "namespace": "twiage-logging",
+      "meta": {},
+      "headers": [],
+      "exitOnError": false,
+      "transports": [
+        {
+          "type": "Console",
+          "opts": {
+            "level": "error",
+            "handleExceptions": true,
+            "json": true,
+            "colorize": false,
+            "timestamp": true,
+            "stringify": true,
+            "humanReadableUnhandledException": true
+          }
+        }
+      ]
+    }
+  },
+  "cucumber": {
+    "baseUrl": "https://api.twiagemed.net"
+  },
+  "notifications": {
+    "pubNubMasterSlaveChannel": "Master_Slave_Channel"
+  },
+  "jwt": {
+    "ignore_expiration": false
+  },
+  "s3": {
+    "environmentFolder": "production"
+  }
+}

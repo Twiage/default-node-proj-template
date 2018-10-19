@@ -1,0 +1,35 @@
+{
+  "twiage": {
+    "logging": {
+      "namespace": "twiage-logging",
+      "meta": {},
+      "headers": [],
+      "exitOnError": false,
+      "transports": [
+        {
+          "type": "Console",
+          "opts": {
+            "level": "debug",
+            "handleExceptions": true,
+            "json": false,
+            "colorize": true,
+            "timestamp": true,
+            "stringify": false,
+            "humanReadableUnhandledException": true
+          }
+        }
+      ]
+    }
+  },
+  "cucumber": {
+    "baseUrl": "http://localhost:3000",
+    "traumaChiefComplaintId": "573a0798cd02d8369e1996a0",
+    "stemiChiefComplaintId": "573a0787cd02d8369e19969e",
+    "twiageLiveOperationsCenterTruck1Id": "59355b4e0618f3d5d75c7a36",
+    "twiageLiveOperationsCenterEmsId": "59355a360618f3d5d75c7a33",
+    "twiageLiveOperationsCenterHospitalId": "593559e30618f3d5d75c7a32"
+  },
+  "notifications": {
+    "pubNubMasterSlaveChannel": "dev-Master_Slave_Channel"
+  }
+}

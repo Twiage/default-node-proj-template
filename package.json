@@ -1,0 +1,89 @@
+{
+  "name": "default-node-proj-template",
+  "version": "1.0.89",
+  "main": "server.babel.js",
+  "repository": "https://github.com/Twiage/default-node-proj-template.git",
+  "author": "Twiage T3",
+  "license": "Unlicensed",
+  "private": true,
+  "scripts": {
+    "start": "node server.babel.js",
+    "dev": "ACTIVE_PROFILE=development node -r dotenv/config server.babel.js",
+    "lint": "eslint --quiet ./src",
+    "lint:fix": "eslint --fix ./src",
+    "test:unit": "cp .env.example .env && jest --config jest-config.json",
+    "test:unit:watch": "jest --config jest-config.json --watch",
+    "test:system": "cp .env.example .env && ava"
+  },
+  "devDependencies": {
+    "ava": "*",
+    "babel-eslint": "*",
+    "babel-jest": "*",
+    "chai": "*",
+    "chai-sinon": "*",
+    "dotenv": "*",
+    "eslint": "*",
+    "eslint-config-airbnb-base": "*",
+    "eslint-plugin-import": "*",
+    "eslint-plugin-lodash-fp": "*",
+    "jest": "*",
+    "mock-require": "*",
+    "node-mocks-http": "*",
+    "sinon": "*",
+    "supertest": "*"
+  },
+  "ava": {
+    "files": [
+      "**/__system-tests__/*.js"
+    ],
+    "source": [
+      "**/*.js",
+      "!dist/**/*"
+    ],
+    "concurrency": 5,
+    "failFast": true,
+    "failWithoutAssertions": false,
+    "powerAssert": false,
+    "require": [
+      "babel-register",
+      "babel-polyfill",
+      "dotenv/config"
+    ],
+    "babel": "inherit"
+  },
+  "dependencies": {
+    "acl": "*",
+    "babel-core": "*",
+    "babel-plugin-root-import": "*",
+    "babel-polyfill": "*",
+    "babel-preset-env": "*",
+    "babel-preset-stage-0": "*",
+    "babel-register": "*",
+    "bluebird": "*",
+    "body-parser": "*",
+    "compression": "*",
+    "config": "*",
+    "cors": "*",
+    "express": "*",
+    "express-winston": "*",
+    "generate-password": "*",
+    "glob": "*",
+    "helmet": "*",
+    "http-errors": "*",
+    "http-status-codes": "*",
+    "is-cidr": "*",
+    "jsonwebtoken": "*",
+    "lodash": "*",
+    "moment": "*",
+    "mongoose": "~4.7.9",
+    "mongoose-unique-validator": "*",
+    "os": "*",
+    "owasp-password-strength-test": "*",
+    "passport": "*",
+    "passport-jwt": "*",
+    "passport-saml": "*",
+    "validator": "*",
+    "winston": "*",
+    "xml2js": "*"
+  }
+}

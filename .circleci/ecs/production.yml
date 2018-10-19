@@ -1,0 +1,24 @@
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    cpu_limit: 512
+    mem_limit: 2048
+  services:
+    default-node-proj-template:
+      essential: true
+      mem_limit: '1792MB'
+    datadog:
+      essential: false
+      cpu_shares: 128
+      mem_limit: '256MB'
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - subnet-4c86b066
+        - subnet-e56f89ac
+      security_groups:
+        - sg-d96dd290
+      assign_public_ip: DISABLED

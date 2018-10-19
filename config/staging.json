@@ -1,0 +1,14 @@
+{
+  "cucumber": {
+    "baseUrl": "https://api-stage.twiagemed.net"
+  },
+  "notifications": {
+    "pubNubMasterSlaveChannel": "Master_Slave_Channel"
+  },
+  "jwt": {
+    "ignore_expiration": false
+  },
+  "s3": {
+    "environmentFolder": "staging"
+  }
+}
