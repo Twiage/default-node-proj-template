@@ -1,6 +1,6 @@
 {
   "name": "default-node-proj-template",
-  "version": "1.0.89",
+  "version": "1.0.0",
   "main": "server.babel.js",
   "repository": "https://github.com/Twiage/default-node-proj-template.git",
   "author": "Twiage T3",
