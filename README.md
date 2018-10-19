@@ -4,7 +4,7 @@
 [Mirror this repo into new repo](https://help.github.com/articles/duplicating-a-repository/)
 
 ## Change project name
-Replace all "default-node-proj-template" with your new project name
+Replace all "default-node-proj-template" with your new project name, which needs to be url friendly
 
 ## CI/CD setup
 This project is set up for CircleCI, more will need to be done to set up CI/CD if you use another service or if you want to customize the circleCI config.
@@ -24,6 +24,25 @@ To set up CircleCI, first add environment variables in CircleCI console:
 Create Repository with new project name in ECS
 
 Create Fargate Service with new project name in ECS
+1. Service name should match project name given above.
+1. Choose VPC for apporpriate env
+1. Choose the 2 private subnets
+1. Security group should be {ENV}_application-instances
+1. Disable Auto assign public IP
+1. Application Load balancer {ENV}-api-load-balancer
+1. Click Add to load balancer
+1. Listener post 443:HTTPS
+1. Create new target group with name {project name}-{env}
+1. Set envaluation order to 1
+1. Target group protocol should be HTTP
+1. Uncheck Enable service discovery integration
+1. Next => Create
+
+If you need to add any additional rules to route to our new container
+1. Go to {ENV}-api-load-balancer => Listener tab => View/edit rules
+1. Add new rule, If : put in new path (or path pattern, ie /project-name*)
+1. Then: put forward to your new target group (named {project name}-{env})
+
 
 ### Update Environment variable file
 Update the variables in .env.example
