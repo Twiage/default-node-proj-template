@@ -1,5 +1,60 @@
 # default-node-proj-template
 
+## Clone Proj
+[Mirror this repo into new repo](https://help.github.com/articles/duplicating-a-repository/)
+
+## Change project name
+Replace all "default-node-proj-template" with your new project name
+
+## CI/CD setup
+This project is set up for CircleCI, more will need to be done to set up CI/CD if you use another service or if you want to customize the circleCI config.
+
+### CircleCI setup
+To set up CircleCI, first add environment variables in CircleCI console:
+
+`AWS_ACCESS_KEY_ID`,  (AWS Console for deployment-nonprod user)
+
+`AWS_ACCOUNT_ID`, (AWS Console, in upper right corner)
+
+`AWS_SECRET_ACCESS_KEY`, (LastPass)
+
+`DATADOG_API_KEY` (DataDog->API)
+
+### AWS setup
+Create Repository with new project name in ECS
+
+Create Fargate Service with new project name in ECS
+
+### Update Environment variable file
+Update the variables in .env.example
+
+Then run
+```bash
+cp .env.example .env
+```
+
+Add any additional environment variables
+
+Generate a KEY
+
+```bash
+openssl rand -base64 32
+```
+
+Use KEY from previous step to encrypt file
+
+```bash
+openssl aes-256-cbc -e -in .env -out ./.circleci/env/{stage|demo|prod} -k {KEY}
+```
+Save key in Last pass
+
+Add key to CircleCi as `[default-node-proj-template]CIPHER_KEY_{STAGING|DEMO|PRODUCTION}`
+
+**!!!NOTE DO NOT COMMIT UNENCRYPTED ENVIRONMENT FILES!!!**
+
+# Template for default-node-proj-template README
+# default-node-proj-template
+
 ## Development
 
 ### Setting up the environment
@@ -20,7 +75,7 @@ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | z
 2. Install Node
 
 ```bash
-nvm install 10.12 && nvm use 10.12
+nvm install 10.11 && nvm use 10.11
 ```
 
 3. Install yarn globally
@@ -122,18 +177,12 @@ openssl rand -base64 32
 Use KEY from previous step to encrypt file
 
 ```bash
-openssl aes-256-cbc -e -in .env -out ./.circleci/env/{staging|demo|prod} -k {KEY}
+openssl aes-256-cbc -e -in .env -out ./.circleci/env/{stage|demo|prod} -k {KEY}
 ```
 
 Add key to CircleCi as `[default-node-proj-template]CIPHER_KEY_{STAGING|DEMO|PRODUCTION}`
 
 **!!!NOTE DO NOT COMMIT UNENCRYPTED ENVIRONMENT FILES!!!**
-
-Decrypt file and output to console:
-
-```bash
-openssl aes-256-cbc -d -in ./.circleci/env/{staging|demo|prod} -k {KEY}
-```
 
 ### CI server
 
@@ -213,32 +262,6 @@ TBD
  There should be 2 object in `deployment` section.
 
 ## Troubleshooting
-
-### Local
-
-Build local image
-
-```bash
-docker build -t local/default-node-proj-template:inspect .
-```
-
-Copy `.env.example`
-
-```bash
-cp .env.example .env
-```
-
-Connect to VPN
-
-Run container from the image
-
-```bash
-docker run --env-file=.env -p 3000:3000 -ti local/default-node-proj-template:inspect
-```
-
-This will run app on http://localhost:3000/
-
-### AWS tips
 
 Install [awscli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
 
