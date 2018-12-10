@@ -5,12 +5,9 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
-const path = require('path');
-
-const baseSchema = require(path.resolve('./src/core/models/base.model'));
-const arrayExtensions = require(path.resolve('./src/core/models/array.model'));
 const isCidr = require('is-cidr').isCidrV4;
-
+const baseSchema = require('./base.model');
+const arrayExtensions = require('./array.model');
 /**
  * Hospital Schema
  */

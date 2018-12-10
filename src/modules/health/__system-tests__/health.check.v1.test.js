@@ -1,8 +1,16 @@
 import test from 'ava';
 import { expect } from 'chai';
+import sinon from 'sinon';
+import mockRequest from 'request';
 import testutils from '../../../core/testing/test.utils';
-import { PATH_HEALTH, PATH_STATUS } from '../../../core/urlPaths';
-import { HEALTHY_RESPONSE_BODY, STATUS_RESPONSE_BODY } from '../controllers/HealthController';
+import {
+  API_AUDIT_ACCESS_LOGS, PATH_HEALTH, PATH_STATUS,
+} from '../../../core/urlPaths';
+import {
+  HEALTHY_RESPONSE_BODY,
+  STATUS_RESPONSE_BODY,
+} from '../controllers/HealthController';
+import config from '../../../config/config';
 
 test.serial('Health Check', async () => {
   // Arrange
@@ -10,8 +18,7 @@ test.serial('Health Check', async () => {
   const expectedJwtToken = '';
   const expectedResponse = HEALTHY_RESPONSE_BODY;
 
-  const expectedExpress = testutils.setupExpress();
-  testutils.setupRoute('../../modules/health/routes/health.routes', expectedExpress);
+  const expectedExpress = await testutils.setupAppV2({}, {});
 
   // Act
   const actualResponse = await testutils.makeGETRequest(expectedExpress, expectedRoute, expectedJwtToken);
@@ -20,7 +27,7 @@ test.serial('Health Check', async () => {
   expect(actualResponse.body).to.deep.equal(expectedResponse);
 });
 
-test.serial('Secure Health Check (status) - global admin', async () => {
+test.serial('Secure Status Check - with bucket location - global admin', async t => {
   // Arrange
   const expectedId = 'idididid';
   const expectedEmail = 'dnom.albert.ilya.matt.leyla@example.com';
@@ -31,19 +38,46 @@ test.serial('Secure Health Check (status) - global admin', async () => {
     email: expectedEmail,
     roles: ['admin'],
   };
-  const expectedResponse = STATUS_RESPONSE_BODY;
+  const expectedResponseCode = 200;
+
+  const expectedResponse = {
+    ...STATUS_RESPONSE_BODY,
+  };
 
   const expectedRoute = PATH_STATUS;
-  const expectedExpress = testutils.setupExpress();
-  testutils.setupJWTWithUser(expectedUser);
-  testutils.setupRoute('../../modules/health/routes/health.routes', expectedExpress);
+
+  mockRequest.post = sinon.stub().returns({ on: () => {} });
+
+  const expectedExpress = await testutils.setupAppV2(expectedUser, {});
+
   const expectedJwt = testutils.expectedJwtToken;
+
+  const audit = require('../../../core/audit');
+  const expectedUrl = `${config.baseUrl}${API_AUDIT_ACCESS_LOGS}`;
+  const expectedIpAddress = '::ffff:127.0.0.1';
+  const expectedCheckAllowedPostBody = {
+    auditOperation: audit.operations.CHECK_ALLOWED,
+    userId: 'none',
+    additionalData: { path: PATH_STATUS },
+  };
+
+  const expectedCheckAllowedPostRequestOptions = {
+    url: expectedUrl,
+    json: true,
+    body: expectedCheckAllowedPostBody,
+    headers: {
+      Authorization: config.access_logs.authorization_token,
+      'x-forwarded-for': expectedIpAddress,
+    },
+  };
 
   // Act
   const actualResponse = await testutils.makeGETRequest(expectedExpress, expectedRoute, expectedJwt);
 
   // Assert
+  t.deepEqual(actualResponse.statusCode, expectedResponseCode);
   expect(actualResponse.body).to.deep.equal(expectedResponse);
+  t.deepEqual(mockRequest.post.getCall(0).args[0], expectedCheckAllowedPostRequestOptions);
 });
 
 
@@ -74,9 +108,9 @@ testutils.USER_BIGBOARD.expectedResponse = testutils.expectedForbidden403;
 testCaseList.forEach(run => {
   test.serial(`${expectedMethod} ${expectedRoute} ${run.desc}`, async t => {
     // Arrange
-    const expectedExpress = testutils.setupExpress();
-    testutils.setupJWTWithUser(run.user);
-    testutils.setupRoute('../../modules/health/routes/health.routes', expectedExpress);
+    mockRequest.post = sinon.stub().returns({ on: () => {} });
+
+    const expectedExpress = await testutils.setupAppV2(run.user, run.twiageCase);
     const expectedJwt = testutils.expectedJwtToken;
 
     // Act

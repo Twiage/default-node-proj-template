@@ -16,6 +16,8 @@ const logger = require('./logger').default;
 
 const OPTIONS_RETURN_CODE = 200;
 
+let expressApp;
+
 const expressModule = {
   extractEmail: request => {
     request.winstonMessageData = {};
@@ -154,7 +156,7 @@ module.exports.initErrorRoutes = function (app) {
 };
 
 module.exports.init = function () {
-  const app = express();
+  const app = this.getExpressApp();
 
   this.initLocalVariables(app);
 
@@ -173,6 +175,13 @@ module.exports.init = function () {
   this.initErrorRoutes(app);
 
   return app;
+};
+
+module.exports.getExpressApp = () => {
+  if (!expressApp) {
+    expressApp = express();
+  }
+  return expressApp;
 };
 
 module.exports.getPassport = () => require('passport');

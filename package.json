@@ -64,6 +64,7 @@
     "compression": "*",
     "config": "*",
     "cors": "*",
+    "crypto": "*",
     "express": "*",
     "express-winston": "*",
     "generate-password": "*",
@@ -75,6 +76,7 @@
     "jsonwebtoken": "*",
     "lodash": "*",
     "moment": "*",
+    "mongodb": "*",
     "mongoose": "~4.7.9",
     "mongoose-unique-validator": "*",
     "os": "*",
@@ -82,6 +84,7 @@
     "passport": "*",
     "passport-jwt": "*",
     "passport-saml": "*",
+    "request": "*",
     "validator": "*",
     "winston": "*",
     "xml2js": "*"

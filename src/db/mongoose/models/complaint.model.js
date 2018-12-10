@@ -3,10 +3,8 @@
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
-const path = require('path');
-
-const baseSchema = require(path.resolve('./src/core/models/base.model'));
-const arrayExtensions = require(path.resolve('./src/core/models/array.model'));
+const baseSchema = require('./base.model');
+const arrayExtensions = require('./array.model');
 
 const ComplaintSchema = new Schema({
   name: {
