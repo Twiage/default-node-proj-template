@@ -4,7 +4,7 @@
     "allows": [
       {
         "resources": [
-          "/v1/status"
+          "/notification/status"
         ],
         "permissions": "get"
       }

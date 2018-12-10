@@ -1,11 +1,11 @@
 import sinon from 'sinon';
-import { PATH_V1_HEALTH, PATH_V1_STATUS } from '../../../core/urlPaths';
+import { PATH_HEALTH, PATH_STATUS } from '../../../core/urlPaths';
 
 describe('health.routes', () => {
   test('configure routes', () => {
     // Arrange
-    const expectedHealthUrl = PATH_V1_HEALTH;
-    const expectedStatusUrl = PATH_V1_STATUS;
+    const expectedHealthUrl = PATH_HEALTH;
+    const expectedStatusUrl = PATH_STATUS;
     const mockHealthRouteV1 = {
       get: jest.fn(() => mockHealthRouteV1),
     };
