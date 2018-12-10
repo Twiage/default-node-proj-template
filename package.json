@@ -1,8 +1,8 @@
 {
-  "name": "default-node-proj-template",
+  "name": "notification-services",
   "version": "1.0.0",
   "main": "server.babel.js",
-  "repository": "https://github.com/Twiage/default-node-proj-template.git",
+  "repository": "https://github.com/Twiage/notification-services.git",
   "author": "Twiage T3",
   "license": "Unlicensed",
   "private": true,

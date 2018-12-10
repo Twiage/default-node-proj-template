@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-const PROJECT_NAME = 'default-node-proj-template';
+const PROJECT_NAME = 'notification-services';
 const PATH_VERSION_1 = `/${PROJECT_NAME}/v1/`;
 const PATH_HEALTH = 'health';
 const PATH_STATUS = 'status';

@@ -1,10 +1,10 @@
-# default-node-proj-template
+# notification-services
 
 ## Clone Proj
 [Mirror this repo into new repo](https://help.github.com/articles/duplicating-a-repository/)
 
 ## Change project name
-Replace all "default-node-proj-template" with your new project name, which needs to be url friendly
+Replace all "notification-services" with your new project name, which needs to be url friendly
 
 ## CI/CD setup
 This project is set up for CircleCI, more will need to be done to set up CI/CD if you use another service or if you want to customize the circleCI config.
@@ -67,12 +67,12 @@ openssl aes-256-cbc -e -in .env -out ./.circleci/env/{stage|demo|prod} -k {KEY}
 ```
 Save key in Last pass
 
-Add key to CircleCi as `[default-node-proj-template]CIPHER_KEY_{STAGING|DEMO|PRODUCTION}`
+Add key to CircleCi as `[notification-services]CIPHER_KEY_{STAGING|DEMO|PRODUCTION}`
 
 **!!!NOTE DO NOT COMMIT UNENCRYPTED ENVIRONMENT FILES!!!**
 
-# Template for default-node-proj-template README
-# default-node-proj-template
+# Template for notification-services README
+# notification-services
 
 ## Development
 
@@ -199,7 +199,7 @@ Use KEY from previous step to encrypt file
 openssl aes-256-cbc -e -in .env -out ./.circleci/env/{stage|demo|prod} -k {KEY}
 ```
 
-Add key to CircleCi as `[default-node-proj-template]CIPHER_KEY_{STAGING|DEMO|PRODUCTION}`
+Add key to CircleCi as `[notification-services]CIPHER_KEY_{STAGING|DEMO|PRODUCTION}`
 
 **!!!NOTE DO NOT COMMIT UNENCRYPTED ENVIRONMENT FILES!!!**
 
@@ -226,10 +226,10 @@ CircleCI will trigger deployment by this tag. We use workflows from CircleCI. Th
 [REVIEW TEAM AGREEMENTS](https://docs.google.com/document/d/1eRPbkjdLwot-lEa-YgVBJCyistBuYH5uDRzknlOMW4k/edit#heading=h.p3yvgogrjuqa)
 
 #### Get task definition:
-1. Go to [Workflows](https://circleci.com/gh/Twiage/workflows/default-node-proj-template)
+1. Go to [Workflows](https://circleci.com/gh/Twiage/workflows/notification-services)
 2. Choose your tagged build.
 3. Choose **demo_release** or **production_release** job
-4. Expand `ecs-cli compose` section. Task definition will be in the console output `INFO[0000] Using ECS task definition                     TaskDefinition="default-node-proj-template:203"`
+4. Expand `ecs-cli compose` section. Task definition will be in the console output `INFO[0000] Using ECS task definition                     TaskDefinition="notification-services:203"`
 5. Change `taskDefinition` in JSON above
 6. Click “Test” and you’re done.
 
@@ -241,8 +241,8 @@ Overwrite the text in there with the JSON below and give it a name (e.g. Message
 
 ```json
 {
-  "taskDefinition": "default-node-proj-template:288",
-  "service": "default-node-proj-template"
+  "taskDefinition": "notification-services:288",
+  "service": "notification-services"
 }
 ```
 
@@ -268,12 +268,12 @@ TBD
  ```
 
  ```bash
- aws ecs update-service --cluster {staging-app-servers|demo-app-servers|production-ECSCluster-5JKJVZ4KUU75} --service default-node-proj-template --task-definition {revision}` - update service, where revision is ARN like `default-node-proj-template:{REVISION_NUMBER}
+ aws ecs update-service --cluster {staging-app-servers|demo-app-servers|production-ECSCluster-5JKJVZ4KUU75} --service notification-services --task-definition {revision}` - update service, where revision is ARN like `notification-services:{REVISION_NUMBER}
  ```
 
  4. Verify service has been updated
  ```bash
- aws ecs describe-services --cluster {staging-app-servers|demo-app-servers|production-ECSCluster-5JKJVZ4KUU75} --services default-node-proj-template:{REVISION_NUMBER}
+ aws ecs describe-services --cluster {staging-app-servers|demo-app-servers|production-ECSCluster-5JKJVZ4KUU75} --services notification-services:{REVISION_NUMBER}
  ```
 
  check `status` and `taskDefinition`
@@ -290,6 +290,6 @@ Install [awscli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html
 
 Now you are able to list images and pull it
 
-`aws ecr list-images --repository-name default-node-proj-template` - to list images
+`aws ecr list-images --repository-name notification-services` - to list images
 
-`docker pull  363852383723.dkr.ecr.us-east-1.amazonaws.com/default-node-proj-template:{TAG}` - to pull particular image
+`docker pull  363852383723.dkr.ecr.us-east-1.amazonaws.com/notification-services:{TAG}` - to pull particular image
