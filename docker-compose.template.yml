@@ -1,9 +1,9 @@
 version: '3'
 services:
-  notification-services:
+  default-node-proj-template:
     ports:
     - "3000:3000"
-    image: $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/notification-services:$CIRCLE_TAG
+    image: $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/default-node-proj-template:$CIRCLE_TAG
     env_file:
       - .env
     logging:
@@ -11,7 +11,7 @@ services:
       options:
         awslogs-group: $LOG_GROUP
         awslogs-region: us-east-1
-        awslogs-stream-prefix: notification-services
+        awslogs-stream-prefix: default-node-proj-template
   datadog:
     image: datadog/agent:latest
     environment:

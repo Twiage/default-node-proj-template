@@ -57,9 +57,9 @@ jobs:
     steps:
     - checkout
     - run: pip install awscli --upgrade
-    - run: docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/notification-services:$CIRCLE_TAG .
+    - run: docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/default-node-proj-template:$CIRCLE_TAG .
     - run: eval $(aws ecr get-login --region us-east-1 --no-include-email)
-    - run: docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/notification-services:$CIRCLE_TAG
+    - run: docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/default-node-proj-template:$CIRCLE_TAG
 
   staging_deployment:
     machine: true
@@ -69,10 +69,10 @@ jobs:
     - run: sudo curl -o /usr/local/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
     - run: sudo chmod +x /usr/local/bin/ecs-cli
     - run: openssl aes-256-cbc -d -in ./.circleci/env/staging -out .env -k $CIPHER_KEY_STAGING
-    - run: sed 's/$DD_API_KEY/'"$DATADOG_API_KEY"'/g; s/$AWS_ACCOUNT_ID/'"$AWS_ACCOUNT_ID"'/g; s/$CIRCLE_TAG/'"$CIRCLE_TAG"'/g; s/$LOG_GROUP/staging-notification-services/g' docker-compose.template.yml > docker-compose.yml
-    - run: ecs-cli configure --cluster staging-app-servers --region us-east-1 --default-launch-type FARGATE --config-name notification-services
-    - run: ecs-cli configure profile --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY --profile-name notification-services
-    - run: ecs-cli compose --ecs-params ./.circleci/ecs/staging.yml --project-name notification-services service up --timeout 20 --cluster-config notification-services
+    - run: sed 's/$DD_API_KEY/'"$DATADOG_API_KEY"'/g; s/$AWS_ACCOUNT_ID/'"$AWS_ACCOUNT_ID"'/g; s/$CIRCLE_TAG/'"$CIRCLE_TAG"'/g; s/$LOG_GROUP/staging-default-node-proj-template/g' docker-compose.template.yml > docker-compose.yml
+    - run: ecs-cli configure --cluster staging-app-servers --region us-east-1 --default-launch-type FARGATE --config-name default-node-proj-template
+    - run: ecs-cli configure profile --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY --profile-name default-node-proj-template
+    - run: ecs-cli compose --ecs-params ./.circleci/ecs/staging.yml --project-name default-node-proj-template service up --timeout 20 --cluster-config default-node-proj-template
 
   demo_release:
     machine: true
@@ -82,10 +82,10 @@ jobs:
     - run: sudo curl -o /usr/local/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
     - run: sudo chmod +x /usr/local/bin/ecs-cli
     - run: openssl aes-256-cbc -d -in ./.circleci/env/demo -out .env -k $CIPHER_KEY_DEMO
-    - run: sed 's/$DD_API_KEY/'"$DATADOG_API_KEY"'/g; s/$AWS_ACCOUNT_ID/'"$AWS_ACCOUNT_ID"'/g; s/$CIRCLE_TAG/'"$CIRCLE_TAG"'/g; s/$LOG_GROUP/demo-notification-services/g' docker-compose.template.yml > docker-compose.yml
-    - run: ecs-cli configure --cluster demo-app-servers --region us-east-1 --default-launch-type FARGATE --config-name notification-services
-    - run: ecs-cli configure profile --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY --profile-name notification-services
-    - run: ecs-cli compose --ecs-params ./.circleci/ecs/demo.yml --project-name notification-services create --create-log-groups --cluster-config notification-services
+    - run: sed 's/$DD_API_KEY/'"$DATADOG_API_KEY"'/g; s/$AWS_ACCOUNT_ID/'"$AWS_ACCOUNT_ID"'/g; s/$CIRCLE_TAG/'"$CIRCLE_TAG"'/g; s/$LOG_GROUP/demo-default-node-proj-template/g' docker-compose.template.yml > docker-compose.yml
+    - run: ecs-cli configure --cluster demo-app-servers --region us-east-1 --default-launch-type FARGATE --config-name default-node-proj-template
+    - run: ecs-cli configure profile --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY --profile-name default-node-proj-template
+    - run: ecs-cli compose --ecs-params ./.circleci/ecs/demo.yml --project-name default-node-proj-template create --create-log-groups --cluster-config default-node-proj-template
 
   production_release:
     machine: true
@@ -95,10 +95,10 @@ jobs:
     - run: sudo curl -o /usr/local/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
     - run: sudo chmod +x /usr/local/bin/ecs-cli
     - run: openssl aes-256-cbc -d -in ./.circleci/env/production -out .env -k $CIPHER_KEY_PRODUCTION
-    - run: sed 's/$DD_API_KEY/'"$DATADOG_API_KEY"'/g; s/$AWS_ACCOUNT_ID/'"$AWS_ACCOUNT_ID"'/g; s/$CIRCLE_TAG/'"$CIRCLE_TAG"'/g; s/$LOG_GROUP/production-notification-services/g' docker-compose.template.yml > docker-compose.yml
-    - run: ecs-cli configure --cluster production-ECSCluster-5JKJVZ4KUU75 --region us-east-1 --default-launch-type FARGATE --config-name notification-services
-    - run: ecs-cli configure profile --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY --profile-name notification-services
-    - run: ecs-cli compose --ecs-params ./.circleci/ecs/production.yml --project-name notification-services create --create-log-groups --cluster-config notification-services
+    - run: sed 's/$DD_API_KEY/'"$DATADOG_API_KEY"'/g; s/$AWS_ACCOUNT_ID/'"$AWS_ACCOUNT_ID"'/g; s/$CIRCLE_TAG/'"$CIRCLE_TAG"'/g; s/$LOG_GROUP/production-default-node-proj-template/g' docker-compose.template.yml > docker-compose.yml
+    - run: ecs-cli configure --cluster production-ECSCluster-5JKJVZ4KUU75 --region us-east-1 --default-launch-type FARGATE --config-name default-node-proj-template
+    - run: ecs-cli configure profile --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY --profile-name default-node-proj-template
+    - run: ecs-cli compose --ecs-params ./.circleci/ecs/production.yml --project-name default-node-proj-template create --create-log-groups --cluster-config default-node-proj-template
 
 workflows:
   version: 2

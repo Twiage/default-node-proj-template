@@ -6,7 +6,7 @@ task_definition:
     cpu_limit: 512
     mem_limit: 2048
   services:
-    notification-services:
+    default-node-proj-template:
       essential: true
       mem_limit: '1792MB'
     datadog:

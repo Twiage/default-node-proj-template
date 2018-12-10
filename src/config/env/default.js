@@ -4,8 +4,8 @@ const moment = require('moment');
 
 module.exports = {
   app: {
-    title: 'notification-services',
-    description: 'Micro services for notification-services',
+    title: 'default-node-proj-template',
+    description: 'Micro services for default-node-proj-template',
     keywords: 'App, World',
   },
   port: process.env.PORT || 3000,
