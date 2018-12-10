@@ -1,6 +1,6 @@
 {
   "name": "notification-services",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "server.babel.js",
   "repository": "https://github.com/Twiage/notification-services.git",
   "author": "Twiage T3",
