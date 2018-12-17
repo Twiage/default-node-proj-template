@@ -1,4 +1,4 @@
-FROM node:10.12-alpine
+FROM node:10.14-alpine
 MAINTAINER twiage
 
 RUN mkdir /opt/twiage

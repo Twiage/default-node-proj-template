@@ -1,58 +1,162 @@
 import { createRequest } from 'node-mocks-http';
 
 describe('express', () => {
-  let originalConfigureApp;
-  let originalConfigureLogging;
-  let originalConfigureAuditLogging;
-  let originalConfigureCaching;
-  let express;
-
-  const mockConfig = {};
-
-  const expectedCompressMiddleware = () => {};
-  const expectedBodyParserUrlEncodedMiddleware = () => {};
-  const expectedBodyParserJsonMiddleware = () => {};
-  const expectedWinstonMiddleware = () => {};
-
-  const expectedLogger = {};
-  const mockLogging = {
-    default: expectedLogger,
-  };
-  const mockCors = jest.fn(() => {});
-  const mockExpressWinston = {
-    logger: jest.fn(() => expectedWinstonMiddleware),
-  };
-  const mockCompression = () => expectedCompressMiddleware;
-  const mockBodyParser = {
-    urlencoded: () => expectedBodyParserUrlEncodedMiddleware,
-    json: () => expectedBodyParserJsonMiddleware,
-  };
-  const mockJwtConfig = {
-    useJwtStrategy: jest.fn(),
-  };
-  const mockSamlConfig = jest.fn();
-
   beforeEach(() => {
-    jest.mock('compression', () => mockCompression);
-    jest.mock('body-parser', () => mockBodyParser);
-    jest.mock('cors', () => mockCors);
-    jest.mock('express-winston', () => mockExpressWinston);
-    jest.mock('../logger', () => mockLogging);
-    jest.mock('../../modules/auth/saml.config', () => mockSamlConfig);
-    jest.mock('../../modules/auth/jwt.config', () => mockJwtConfig);
-    jest.mock('../../config/config', () => mockConfig);
-    express = require('../express');
-    originalConfigureApp = express.configureApp;
-    originalConfigureLogging = express.configureLogging;
-    originalConfigureAuditLogging = express.configureAuditLogging;
-    originalConfigureCaching = express.configureCaching;
+    jest.resetModules();
+  });
+  test('start', () => {
+    // Arrange
+    const mockConfigureHealthRoutes = jest.fn();
+    const mockExpressApp = {
+      get: jest.fn(),
+      listen: jest.fn((port, callback) => { callback(); }),
+    };
+    const mockExpress = jest.fn(() => mockExpressApp);
+    const mockLogger = { info: jest.fn() };
+
+    jest.mock('express', () => mockExpress);
+    jest.mock('../../modules/health/routes/health.routes', () => mockConfigureHealthRoutes);
+    jest.mock('../logger', () => mockLogger);
+
+    const expressModule = require('../express');
+
+    const setupExpress = expressModule.default;
+    const expectedPort = expressModule.PORT;
+
+    expressModule.initializers.initHelmet = jest.fn();
+    expressModule.initializers.initLogging = jest.fn();
+    expressModule.initializers.initBodyParser = jest.fn();
+
+    const expectedInfoString = `Server started at port ${expectedPort}`;
+
+    // Act
+    setupExpress();
+
+    // Assert
+    expect(mockConfigureHealthRoutes).toHaveBeenCalledWith(mockExpressApp);
+    expect(mockExpressApp.listen).toHaveBeenCalledWith(expectedPort, expect.any(Function));
+    expect(mockLogger.info).toHaveBeenCalledWith(expectedInfoString);
+    expect(expressModule.initializers.initHelmet).toHaveBeenCalledWith(mockExpressApp);
+    expect(expressModule.initializers.initLogging).toHaveBeenCalledWith(mockExpressApp);
+    expect(expressModule.initializers.initBodyParser).toHaveBeenCalledWith(mockExpressApp);
   });
 
-  afterEach(() => {
-    express.configureApp = originalConfigureApp;
-    express.configureLogging = originalConfigureLogging;
-    express.configureCaching = originalConfigureCaching;
-    express.configureAuditLogging = originalConfigureAuditLogging;
+  test('initHelmet', () => {
+    // Arrange
+    const expectedDisableString = 'x-powered-by';
+    const expectedframeguard = { id: 'some frameguard object' };
+    const expectedxssFilter = { id: 'some xssFilter object' };
+    const expectednoSniff = { id: 'some noSniff object' };
+    const expectedieNoOpen = { id: 'some ieNoOpen object' };
+    const expectedhsts = { id: 'some hsts object' };
+    const expectedMilliseconds = 123414;
+    const expectedDuration = 6;
+    const expectedTimeInteval = 'months';
+    const expectedHstsOptions = {
+      maxAge: expectedMilliseconds,
+      includeSubdomains: true,
+      force: true,
+    };
+
+    const mockHelmet = {
+      frameguard: jest.fn(() => expectedframeguard),
+      xssFilter: jest.fn(() => expectedxssFilter),
+      noSniff: jest.fn(() => expectednoSniff),
+      ieNoOpen: jest.fn(() => expectedieNoOpen),
+      hsts: jest.fn(() => expectedhsts),
+    };
+    const mockMoment = {
+      duration: jest.fn(() => mockMoment),
+      asMilliseconds: jest.fn(() => expectedMilliseconds),
+    };
+
+    const mockExpressApp = {
+      use: jest.fn(),
+      disable: jest.fn(),
+    };
+    jest.mock('helmet', () => mockHelmet);
+    jest.mock('moment', () => mockMoment);
+    const expressModule = require('../express');
+
+    // Act
+    expressModule.initializers.initHelmet(mockExpressApp);
+
+    // Assert
+    expect(mockHelmet.frameguard).toHaveBeenCalled();
+    expect(mockHelmet.xssFilter).toHaveBeenCalled();
+    expect(mockHelmet.noSniff).toHaveBeenCalled();
+    expect(mockHelmet.ieNoOpen).toHaveBeenCalled();
+    expect(mockExpressApp.use).toHaveBeenCalledWith(expectedframeguard);
+    expect(mockExpressApp.use).toHaveBeenCalledWith(expectedxssFilter);
+    expect(mockExpressApp.use).toHaveBeenCalledWith(expectednoSniff);
+    expect(mockExpressApp.use).toHaveBeenCalledWith(expectedieNoOpen);
+    expect(mockExpressApp.use).toHaveBeenCalledWith(expectedhsts);
+    expect(mockExpressApp.disable).toHaveBeenCalledWith(expectedDisableString);
+    expect(mockHelmet.hsts).toHaveBeenCalledWith(expectedHstsOptions);
+    expect(mockMoment.duration).toHaveBeenCalledWith(expectedDuration, expectedTimeInteval);
+  });
+
+  test('initLogging', () => {
+    // Arrange
+    const mockLogger = {};
+    const expectedWinstonMiddleware = () => {};
+
+    const mockExpressWinston = {
+      logger: jest.fn(() => expectedWinstonMiddleware),
+    };
+
+    jest.mock('express-winston', () => mockExpressWinston);
+
+    jest.mock('../logger', () => mockLogger);
+    const expressModule = require('../express');
+
+    const expectedMessageFormat = '{{req.winstonMessageData.authInfo}} {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms';
+    const expectedLoggerConfiguration = {
+      winstonInstance: mockLogger,
+      meta: true,
+      msg: expectedMessageFormat,
+      expressFormat: false,
+      dynamicMeta: expressModule.initializers.extractEmail,
+    };
+    const expectedEnvString = 'production';
+    const mockApp = {
+      use: jest.fn(),
+      get: () => expectedEnvString,
+    };
+
+    // Act
+    expressModule.initializers.initLogging(mockApp);
+
+    // Assert
+    expect(mockExpressWinston.logger).toBeCalledWith(expectedLoggerConfiguration);
+    expect(mockApp.use).toBeCalledWith(expectedWinstonMiddleware);
+  });
+
+  test('initBodyParser', () => {
+    // Arrange
+    const mockApp = {
+      use: jest.fn(),
+      get: () => {},
+    };
+    const expectedBodyParserUrlEncodedMiddleware = () => {};
+
+    const expectedBodyParserJsonMiddleware = () => {};
+
+    const mockBodyParser = {
+      urlencoded: () => expectedBodyParserUrlEncodedMiddleware,
+      json: () => expectedBodyParserJsonMiddleware,
+    };
+
+    jest.mock('body-parser', () => mockBodyParser);
+
+    const expressModule = require('../express');
+
+    // Act
+    expressModule.initializers.initBodyParser(mockApp);
+
+    // Assert
+    expect(mockApp.use).toBeCalledWith(expectedBodyParserUrlEncodedMiddleware);
+    expect(mockApp.use).toBeCalledWith(expectedBodyParserJsonMiddleware);
   });
 
   test('extract email from request header JWT - JWT present', () => {
@@ -65,15 +169,17 @@ describe('express', () => {
     const expectedRequest = createRequest({
       headers: expectedHeaders,
     });
+    const express = require('../express');
+
 
     // Act
-    express.default.extractEmail(expectedRequest);
+    express.initializers.extractEmail(expectedRequest);
 
     // Assert
     expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
   });
 
-  test('extract email from request header JWT - non JWT token present', () => {
+  test('extract email from request header JWT - Bearer token present', () => {
     // Arrange
     const expectedAuthInfo = 'Bearer token';
     const expectedJWT = 'Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlseWEuZXJlbWluQGZsYXRzdGFjay5jb20iLCJpYXQiOjE1MjI4NTQ3NTQsImV4cCI6MTUyMzExMzk1NCwiaXNzIjoiVHdpYWdlIn0.GFTurO_TOsVOCPlKhB8BeMaa294qziaVBU3G8qsHcZc-8ca6YDzBLRlvNwG8ml6IEIrBIwETRSitD27COZesqFsR6SqG62QMtfBNZwtj6Ezw8l1Fx3UdL6huYF3Hfsvba6n1-KivZlLc4ajoykV3M7NlJDe1Io4ERSxAyoZfDN-qhpsInz0mF5ZDTeqW-N0WZaZ40AMjqylaFdaIlj0su6k7_QjswyDIJ0IJCR2qntonMZ-xwwYEkzsa7E2EZo1SSyuzzyqBx96D4rkHD6v0quD_NyCE6SCBXOr_fVjGEDgVKXadx6qZ_Aa358ZvimVr0TLP3OWlA2uzVDh0sMUlojFl-OkjoMQDVPNw9Ru2BvbuKRsH9w5-AgGtqaJKJjBhtb3tJwK3_6MoG649Lmp4OvxnqP27E86nB5pILpJ6RiJWZVNVRssmH9qma3Bpfb0wcyU_shXDoPGmlQyNtWk0WXb4Z8Ht6A0lCXHFzBT_WDF8va-K804og1YmWauvn5PSrAoKQYQiyLYvKHYnSqQBpktvXviprVjcqE8TYjouHsjzR0a9p_yKq-AWx5tU--hGOU-RIFf71Ft3FI6GXc3pQOS3Tb9LLETpPJLU0wrXc1H0MPLDV1epwXEKQ-9L_7CW98l5q8bUqlATAv3qu5YRLSAO3sXKCuuPD5Lur4ceRcY';
@@ -83,9 +189,11 @@ describe('express', () => {
     const expectedRequest = createRequest({
       headers: expectedHeaders,
     });
+    const express = require('../express');
+
 
     // Act
-    express.default.extractEmail(expectedRequest);
+    express.initializers.extractEmail(expectedRequest);
 
     // Assert
     expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
@@ -95,91 +203,13 @@ describe('express', () => {
     // Arrange
     const expectedAuthInfo = 'No authorization header';
     const expectedRequest = createRequest({});
+    const express = require('../express');
+
 
     // Act
-    express.default.extractEmail(expectedRequest);
+    express.initializers.extractEmail(expectedRequest);
 
     // Assert
     expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
-  });
-
-  test('initMiddleware', () => {
-    // Arrange
-    const expectedStackError = 'showStackError';
-    const expectedStackErrorState = true;
-    const expectedJsonCallback = 'jsonp callback';
-
-    const mockApp = {
-      use: jest.fn(),
-      initialize: jest.fn(),
-      enable: jest.fn(),
-      set: jest.fn(),
-      get: jest.fn(),
-    };
-
-    const mockPassport = {
-      initialize: jest.fn(() => mockPassport),
-    };
-    express.getPassport = () => mockPassport;
-    express.configureApp = jest.fn();
-
-    // Act
-    express.initMiddleware(mockApp);
-
-    // Assert
-    expect(mockApp.use).toHaveBeenNthCalledWith(1, mockCors());
-    expect(mockApp.use).toHaveBeenNthCalledWith(2, mockPassport.initialize());
-    expect(express.configureApp).toBeCalledWith(mockApp);
-    expect(mockApp.set).toBeCalledWith(expectedStackError, expectedStackErrorState);
-    expect(mockApp.enable).toBeCalledWith(expectedJsonCallback);
-    expect(mockPassport.initialize).toBeCalledWith();
-    expect(mockJwtConfig.useJwtStrategy).toBeCalled();
-    expect(mockSamlConfig).toBeCalled();
-  });
-
-  test('configureLogging - not test env', () => {
-    // Arrange
-    const expectedMessageFormat = '{{req.winstonMessageData.authInfo}} {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms';
-    const expectedLoggerConfiguration = {
-      winstonInstance: expectedLogger,
-      meta: true,
-      msg: expectedMessageFormat,
-      expressFormat: false,
-      dynamicMeta: express.default.extractEmail,
-    };
-    const expectedEnvString = 'production';
-    const mockApp = {
-      use: jest.fn(),
-      get: () => expectedEnvString,
-    };
-
-    // Act
-    express.configureLogging(mockApp);
-
-    // Assert
-    expect(mockExpressWinston.logger).toBeCalledWith(expectedLoggerConfiguration);
-    expect(mockApp.use).toBeCalledWith(expectedWinstonMiddleware);
-  });
-
-  test('configureApp', () => {
-    // Arrange
-    const mockApp = {
-      use: jest.fn(),
-      get: () => {},
-    };
-
-    express.configureLogging = jest.fn();
-    express.configureCaching = jest.fn();
-    express.configureAuditLogging = jest.fn();
-
-    // Act
-    express.configureApp(mockApp);
-
-    // Assert
-    expect(mockApp.use).toBeCalledWith(expectedCompressMiddleware);
-    expect(express.configureLogging).toHaveBeenCalledWith(mockApp);
-    expect(express.configureCaching).toHaveBeenCalledWith(mockApp);
-    expect(mockApp.use).toBeCalledWith(expectedBodyParserUrlEncodedMiddleware);
-    expect(mockApp.use).toBeCalledWith(expectedBodyParserJsonMiddleware);
   });
 });
