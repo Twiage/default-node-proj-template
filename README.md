@@ -4,26 +4,7 @@
 [Mirror this repo into new repo](https://help.github.com/articles/duplicating-a-repository/)
 
 ## Change project name
-Replace all "default-node-proj-template" with your new project name
-
-## CI/CD setup
-This project is set up for CircleCI, more will need to be done to set up CI/CD if you use another service or if you want to customize the circleCI config.
-
-### CircleCI setup
-To set up CircleCI, first add environment variables in CircleCI console:
-
-`AWS_ACCESS_KEY_ID`,  (AWS Console for deployment-nonprod user)
-
-`AWS_ACCOUNT_ID`, (AWS Console, in upper right corner)
-
-`AWS_SECRET_ACCESS_KEY`, (LastPass)
-
-`DATADOG_API_KEY` (DataDog->API)
-
-### AWS setup
-Create Repository with new project name in ECS
-
-Create Fargate Service with new project name in ECS
+Replace all "default-node-proj-template" with your new project name, which needs to be url friendly
 
 ### Update Environment variable file
 Update the variables in .env.example
@@ -48,7 +29,57 @@ openssl aes-256-cbc -e -in .env -out ./.circleci/env/{stage|demo|prod} -k {KEY}
 ```
 Save key in Last pass
 
-Add key to CircleCi as `[default-node-proj-template]CIPHER_KEY_{STAGING|DEMO|PRODUCTION}`
+Add key to CircleCI to `{ENV} Cipher` entry in LastPass
+
+## CI/CD setup
+This project is set up for CircleCI, more will need to be done to set up CI/CD if you use another service or if you want to customize the circleCI config.
+
+### CircleCI setup
+To set up CircleCI, first add environment variables in CircleCI console:
+
+`AWS_ACCESS_KEY_ID`,  (AWS Console for deployment-nonprod user)
+
+`AWS_ACCOUNT_ID`, (AWS Console, in upper right corner)
+
+`AWS_SECRET_ACCESS_KEY`, (LastPass)
+
+`DATADOG_API_KEY` (DataDog->API)
+
+`CIPHER_KEY_STAGING` (Created in  `Update Environment variable file` steps above)
+
+`CIPHER_KEY_DEMO` (Created in  `Update Environment variable file` steps above)
+
+`CIPHER_KEY_PRODUCTION` (Created in  `Update Environment variable file` steps above)
+
+### AWS setup
+Create Repository with new project name in ECS
+
+Create Fargate Service with new project name in ECS
+1. Choose family, should be the name of the service
+1. Service name should match project name given above.
+1. Choose number of tasks
+1. Choose VPC for apporpriate env
+1. Choose the 2 private subnets
+1. Security group should be {ENV}_application-instances
+1. Disable Auto assign public IP
+1. Application Load balancer {ENV}-api-load-balancer
+1. Click Add to load balancer
+1. Listener port 443:HTTPS
+1. Create new target group with name {project name}-{env}
+1. Target group protocol should be HTTP
+1. Confirm health check URL. (ie for the media-services project => /media/health)
+1. Uncheck Enable service discovery integration
+1. Next => Next => Create
+
+If you need to add any additional rules to route to our new container
+1. Go to {ENV}-api-load-balancer => Listener tab => View/edit rules
+1. Add new rule, If : put in new path (or path pattern, ie /project-name*)
+1. Then: put forward to your new target group (named {project name}-{env})
+
+Troubleshooting
+[Create Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:) - check if they exist.
+1. Staging (or another) log group might not be created, so check if they all exist. Naming convention is {project name}-{env}
+
 
 **!!!NOTE DO NOT COMMIT UNENCRYPTED ENVIRONMENT FILES!!!**
 

@@ -4,10 +4,9 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const crypto = require('crypto');
-const path = require('path');
 
-const baseSchema = require(path.resolve('./src/core/models/base.model'));
-const arrayExtensions = require(path.resolve('./src/core/models/array.model'));
+const baseSchema = require('./base.model');
+const arrayExtensions = require('./array.model');
 
 const ControllingAgencySchema = new Schema({
   name: {

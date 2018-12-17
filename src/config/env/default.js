@@ -49,4 +49,7 @@ module.exports = {
       secretAccessKey: process.env.AWS_ALERTER_SOUND_FILE_READER_SECRET_ACCESS_KEY,
     },
   },
+  access_logs: {
+    authorization_token: process.env.ACCESS_LOGS_AUTHORIZATION_TOKEN,
+  },
 };

@@ -12,6 +12,43 @@ exports.expectedJwtToken = expectedJwtToken;
 exports.codeForbidden = 403;
 exports.codeCreated = 201;
 
+exports.setupAppV2 = (user, twiageCase = {}, mockDatabase) => new Promise(resolve => {
+  const mockMongoDriverDatabase = { db: () => mockDatabase };
+
+  const mockMongodb = require('mongodb');
+  const mockMongoose = require('mongoose');
+  const mockExpress = require('../../core/express').getExpressApp();
+
+  mockMongoose.connect = () => new Promise(connectResolve => connectResolve());
+  mockMongoose.set = () => {};
+  mockMongoose.Types.ObjectId.isValid = () => true;
+
+  mockMongodb.MongoClient.connect = (url, options, callback) => callback(null, mockMongoDriverDatabase);
+
+  mockExpress.listen = (port, host, callback) => callback();
+
+  require('../../core/app').start(app => {
+    const mockAccessTokenModel = mockMongoose.model('AccessToken');
+    const mockToken = {
+      isExpired: () => false,
+      user,
+    };
+    const mockQuery = {
+      populate: () => mockQuery,
+      exec: callback => callback(null, mockToken),
+    };
+    mockAccessTokenModel.findOne = () => mockQuery;
+
+    const mockUserModel = mockMongoose.model('User');
+    mockUserModel.findOne = () => new Promise(findOneResolve => findOneResolve(user));
+    mockUserModel.verification = true;
+
+    const mockTwiageCase = mockMongoose.model('TwiageCase');
+    mockTwiageCase.findById = () => ({ exec: callback => callback(null, twiageCase) });
+    resolve(app);
+  });
+});
+
 /**
  * @param controllerPath relative to src/testutils/
  * @param routePath relative to src/testutils
@@ -89,7 +126,6 @@ exports.setupApp = user => {
   exports.setupJWTWithUser(user);
   const mockMongoose = { model: () => {} };
   mock('mongoose', mockMongoose);
-
   return expectedExpress;
 };
 
@@ -170,6 +206,7 @@ exports.differentEMSAgencyId = '594a481ea2c651001190ed21';
 
 exports.USER_NO_CREDENTIALS = {
   desc: 'No credentials',
+  twiageCase: { _id: 1234, caseNumber: 56789, createdBy: { equals: () => false } },
 };
 exports.USER_NO_AFFILIATIONS = {
   desc: 'User - no affiliations',
@@ -178,29 +215,39 @@ exports.USER_NO_AFFILIATIONS = {
     controllingAgenciesAdministered: [],
     hospitalsAdministered: [],
   },
+  twiageCase: { _id: 1234, caseNumber: 56789, createdBy: { equals: () => false } },
+
 };
 exports.USER_EMS_MEMBER_CASE_CREATOR = {
   desc: 'Member of EMS - Case Creator ',
   user: { roles: ['user'], emsAgencyMemberships: [exports.emsAgencyId] },
   emsAgency: { members: [{ equals: () => true }] },
-  twiageCase: { createdBy: { equals: () => true } },
+  twiageCase: { _id: 1234, caseNumber: 56789, createdBy: { equals: () => true } },
 };
 exports.USER_EMS_MEMBER_SAME_EMS_WITH_CASE_CREATOR = {
   desc: 'Member of EMS that created case, but not case creator',
   user: { roles: ['user'], emsAgencyMemberships: [exports.emsAgencyId] },
   emsAgency: { members: [{ equals: () => true }] },
-  twiageCase: { createdBy: { equals: () => false } },
+  twiageCase: { _id: 1234, caseNumber: 56789, createdBy: { equals: () => false } },
 };
 exports.USER_EMS_MEMBER = {
   desc: 'Member of EMS',
   user: { roles: ['user'], emsAgencyMemberships: [exports.differentEMSAgencyId] },
   emsAgency: { administrators: [{ equals: () => false }] },
+  twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
+    destinationHospital: { members: [{ equals: () => false }] },
+    createdBy: { equals: () => false },
+  },
 };
 exports.USER_MEMBER_DESTINATION_HOSPITAL = {
   desc: 'Member of Destination Hospital',
   user: { roles: ['user'], hospitalMemberships: [exports.hospitalId] },
   hospital: { members: [{ equals: () => true }] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     destinationHospital: { members: [{ equals: () => true }] },
     createdBy: { equals: () => false },
   },
@@ -209,6 +256,8 @@ exports.USER_MEMBER_NOT_DESTINATION_HOSPITAL = {
   desc: 'Member of Not Destination Hospital',
   user: { roles: ['user'], hospitalMemberships: [exports.differentHospitalId] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     destinationHospital: { members: [{ equals: () => false }] },
     createdBy: { equals: () => false },
   },
@@ -217,6 +266,8 @@ exports.USER_MEMBER_CA_EMS_CREATED_CASE = {
   desc: 'Member of CA controls EMS created case',
   user: { roles: ['user'], controllingAgencyMemberships: [exports.controllingAgencyId] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     emsAgency: { controllingAgencies: [{ equals: () => true }] },
     createdBy: { equals: () => false },
   },
@@ -225,6 +276,8 @@ exports.USER_MEMBER_CA_DESTINATION_HOSPITAL = {
   desc: 'Member of CA controls Destination Hospital',
   user: { roles: ['user'], controllingAgencyMemberships: [exports.controllingAgencyId] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     destinationHospital: { controllingAgencies: [{ equals: () => true }] },
     createdBy: { equals: () => false },
   },
@@ -233,6 +286,8 @@ exports.USER_MEMBER_CA = {
   desc: 'Member of CA',
   user: { roles: ['user'], controllingAgencyMemberships: [exports.differentControllingAgencyId] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     destinationHospital: { controllingAgencies: [{ equals: () => false }] },
     emsAgency: { controllingAgencies: [{ equals: () => false }] },
     createdBy: { equals: () => false },
@@ -243,6 +298,8 @@ exports.USER_ADMIN_DESTINATION_HOSPITAL = {
   user: { roles: ['user'], hospitalsAdministered: [exports.hospitalId] },
   hospital: { administrators: [{ equals: () => true }] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     destinationHospital: { administrators: [{ equals: () => true }] },
     createdBy: { equals: () => false },
   },
@@ -251,6 +308,8 @@ exports.USER_ADMIN_NOT_DESTINATION_HOSPITAL = {
   desc: 'Admin of NOT Destination Hospital',
   user: { roles: ['user'], hospitalsAdministered: [exports.differentHospitalId] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     destinationHospital: { administrators: [{ equals: () => false }] },
     createdBy: { equals: () => false },
   },
@@ -260,6 +319,8 @@ exports.USER_ADMIN_EMS_CREATED_CASE = {
   user: { roles: ['user'], emsAgenciesAdministered: [exports.emsAgencyId] },
   emsAgency: { administrators: [{ equals: () => true }] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     createdBy: { equals: () => true },
   },
 };
@@ -267,6 +328,8 @@ exports.USER_ADMIN_EMS = {
   desc: 'Admin of EMS',
   user: { roles: ['user'], emsAgenciesAdministered: [exports.differentEMSAgencyId] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     emsAgency: { administrators: [{ equals: () => false }] },
     createdBy: { equals: () => false },
   },
@@ -276,6 +339,8 @@ exports.USER_ADMIN_CA_DESTINATION_HOSPITAL = {
   user: { roles: ['user'], controllingAgenciesAdministered: [exports.controllingAgencyId] },
   controllingAgency: { administrators: [{ equals: () => true }] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     destinationHospital: { controllingAgencies: [{ equals: () => true }] },
     createdBy: { equals: () => false },
   },
@@ -285,6 +350,8 @@ exports.USER_ADMIN_CA_EMS_CREATED_CASE = {
   controllingAgency: { administrators: [{ equals: () => true }] },
   user: { roles: ['user'], controllingAgenciesAdministered: [exports.controllingAgencyId] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     emsAgency: { controllingAgencies: [{ equals: () => true }] },
     createdBy: { equals: () => false },
   },
@@ -293,6 +360,8 @@ exports.USER_ADMIN_CA = {
   desc: 'Admin of CA not associated with the hospital or EMS case creator',
   user: { roles: ['user'], controllingAgenciesAdministered: [exports.differentControllingAgencyId] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     emsAgency: { controllingAgencies: [{ equals: () => false }] },
     destinationHospital: { controllingAgencies: [{ equals: () => false }] },
     createdBy: { equals: () => false },
@@ -301,12 +370,20 @@ exports.USER_ADMIN_CA = {
 exports.USER_GLOBAL_ADMIN = {
   desc: 'Global Admin',
   user: { roles: ['admin'] },
+  twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
+    destinationHospital: { members: [{ equals: () => false }] },
+    createdBy: { equals: () => false },
+  },
 };
 exports.USER_BIGBOARD = {
   desc: 'BigBoard',
   user: { roles: ['bigBoard'], hospitalMemberships: [exports.hospitalId] },
   hospital: { members: [{ equals: () => true }] },
   twiageCase: {
+    _id: 1234,
+    caseNumber: 56789,
     destinationHospital: { members: [{ equals: () => true }] },
     createdBy: { equals: () => false },
   },
@@ -334,19 +411,8 @@ exports.testCaseList = [
   exports.USER_BIGBOARD,
 ];
 
-exports.setupJWTWithUser = user => {
-  let expectedUser;
-  if (user) {
-    expectedUser = Object.assign({
-      iat: 1539686468,
-      exp: 2539945668,
-      iss: 'Twiage',
-    }, user);
-  }
-
-  const mockUserDAO = { getUserByEmail: () => new Promise(resolve => resolve(expectedUser)) };
+exports.setupJWTWithUser = () => {
   delete require.cache[require.resolve('../../modules/auth/jwt.config')];
-  mock('../../modules/auth/users.dao', mockUserDAO);
   const jwtConfig = require('../../modules/auth/jwt.config');
   jwtConfig.useJwtStrategy();
 };

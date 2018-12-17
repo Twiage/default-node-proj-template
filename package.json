@@ -1,6 +1,6 @@
 {
   "name": "default-node-proj-template",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "main": "server.babel.js",
   "repository": "https://github.com/Twiage/default-node-proj-template.git",
   "author": "Twiage T3",
@@ -64,6 +64,7 @@
     "compression": "*",
     "config": "*",
     "cors": "*",
+    "crypto": "*",
     "express": "*",
     "express-winston": "*",
     "generate-password": "*",
@@ -75,6 +76,7 @@
     "jsonwebtoken": "*",
     "lodash": "*",
     "moment": "*",
+    "mongodb": "*",
     "mongoose": "~4.7.9",
     "mongoose-unique-validator": "*",
     "os": "*",
@@ -82,6 +84,7 @@
     "passport": "*",
     "passport-jwt": "*",
     "passport-saml": "*",
+    "request": "*",
     "validator": "*",
     "winston": "*",
     "xml2js": "*"
