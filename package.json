@@ -36,7 +36,7 @@
     "files": [
       "**/__system-tests__/*.js"
     ],
-    "source": [
+    "sources": [
       "**/*.js",
       "!dist/**/*"
     ],
@@ -49,7 +49,12 @@
       "babel-polyfill",
       "dotenv/config"
     ],
-    "babel": "inherit"
+    "babel": {
+      "testOptions": {
+        "babelrc": false,
+        "configFile": false
+      }
+    }
   },
   "dependencies": {
     "acl": "*",

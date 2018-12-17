@@ -7,6 +7,8 @@ import bodyParser from 'body-parser';
 import configureHealthRoutes from '../modules/health/routes/health.routes';
 import logger from './logger';
 
+let expressApp;
+
 export const PORT = 3000;
 
 const initHelmet = app => {
@@ -56,12 +58,19 @@ const initBodyParser = app => {
   app.use(bodyParser.json());
 };
 
+const getExpressApp = () => {
+  if (!expressApp) {
+    expressApp = express();
+  }
+  return expressApp;
+};
+
 export const initializers = {
-  initHelmet, initLogging, extractEmail, initBodyParser, 
+  initHelmet, initLogging, extractEmail, initBodyParser, getExpressApp,
 };
 
 export default () => {
-  const app = express();
+  const app = initializers.getExpressApp();
   initializers.initHelmet(app);
   initializers.initLogging(app);
   initializers.initBodyParser(app);

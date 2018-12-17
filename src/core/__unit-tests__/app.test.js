@@ -1,33 +1,30 @@
 describe('app', () => {
   const dummyDb = {};
-  const dummyApp = {};
   const mockConfig = {};
-  const mockExpress = {
-    init: jest.fn(() => dummyApp),
-  };
   const mockMongoose = {
     connect: jest.fn(() => new Promise(resolve => resolve(dummyDb))),
     loadModels: () => {},
   };
+  const mockSetupExpress = jest.fn();
 
   beforeEach(() => {
+    jest.mock('../express', () => mockSetupExpress);
     jest.mock('../mongoose', () => mockMongoose);
-    jest.mock('../express', () => mockExpress);
     jest.mock('../../config/config', () => mockConfig);
   });
 
   test('init', async () => {
     // Arrange
-    const expectedCallback = jest.fn();
     const app = require('../app');
+    const mockCallback = jest.fn();
 
     // Act
-    await app.init(expectedCallback);
+    await app.init(mockCallback);
 
     // Assert
+    expect(mockSetupExpress).toBeCalled();
     expect(mockMongoose.connect).toBeCalled();
-    expect(mockExpress.init).toBeCalledWith(dummyDb);
-    expect(expectedCallback).toBeCalledWith(dummyApp, dummyDb, mockConfig);
+    expect(mockCallback).toBeCalled();
   });
 
   test('init - with no callback', async () => {
@@ -38,7 +35,7 @@ describe('app', () => {
     await app.init();
 
     // Assert
+    expect(mockSetupExpress).toBeCalled();
     expect(mockMongoose.connect).toBeCalled();
-    expect(mockExpress.init).toBeCalledWith(dummyDb);
   });
 });

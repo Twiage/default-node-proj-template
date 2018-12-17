@@ -17,7 +17,7 @@ exports.setupAppV2 = (user, twiageCase = {}, mockDatabase) => new Promise(resolv
 
   const mockMongodb = require('mongodb');
   const mockMongoose = require('mongoose');
-  const mockExpress = require('../../core/express').getExpressApp();
+  const mockExpress = require('../../core/express').initializers.getExpressApp();
 
   mockMongoose.connect = () => new Promise(connectResolve => connectResolve());
   mockMongoose.set = () => {};

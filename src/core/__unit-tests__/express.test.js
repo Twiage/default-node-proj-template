@@ -11,10 +11,8 @@ describe('express', () => {
       get: jest.fn(),
       listen: jest.fn((port, callback) => { callback(); }),
     };
-    const mockExpress = jest.fn(() => mockExpressApp);
     const mockLogger = { info: jest.fn() };
 
-    jest.mock('express', () => mockExpress);
     jest.mock('../../modules/health/routes/health.routes', () => mockConfigureHealthRoutes);
     jest.mock('../logger', () => mockLogger);
 
@@ -26,6 +24,7 @@ describe('express', () => {
     expressModule.initializers.initHelmet = jest.fn();
     expressModule.initializers.initLogging = jest.fn();
     expressModule.initializers.initBodyParser = jest.fn();
+    expressModule.initializers.getExpressApp = () => mockExpressApp;
 
     const expectedInfoString = `Server started at port ${expectedPort}`;
 
