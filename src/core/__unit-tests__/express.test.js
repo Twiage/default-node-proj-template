@@ -2,14 +2,24 @@ import { createRequest } from 'node-mocks-http';
 
 describe('express', () => {
   beforeEach(() => {
+    jest.mock('../../config/config', () => {});
+    jest.mock('../../modules/auth/saml.config', () => {});
+    jest.mock('../../modules/auth/jwt.config', () => {});
+    jest.mock('../../modules/health/routes/health.routes', () => {});
     jest.resetModules();
   });
   test('start', () => {
     // Arrange
+    const expectedStackError = 'showStackError';
+    const expectedStackErrorState = true;
+
     const mockConfigureHealthRoutes = jest.fn();
     const mockExpressApp = {
       get: jest.fn(),
       listen: jest.fn((port, callback) => { callback(); }),
+      use: jest.fn(),
+      set: jest.fn(),
+      enable: jest.fn(),
     };
     const mockLogger = { info: jest.fn() };
 
@@ -24,6 +34,8 @@ describe('express', () => {
     expressModule.initializers.initHelmet = jest.fn();
     expressModule.initializers.initLogging = jest.fn();
     expressModule.initializers.initBodyParser = jest.fn();
+    expressModule.initializers.initPassport = jest.fn();
+    expressModule.initializers.initCors = jest.fn();
     expressModule.initializers.getExpressApp = () => mockExpressApp;
 
     const expectedInfoString = `Server started at port ${expectedPort}`;
@@ -32,12 +44,15 @@ describe('express', () => {
     setupExpress();
 
     // Assert
-    expect(mockConfigureHealthRoutes).toHaveBeenCalledWith(mockExpressApp);
+    expect(mockExpressApp.set).toBeCalledWith(expectedStackError, expectedStackErrorState);
     expect(mockExpressApp.listen).toHaveBeenCalledWith(expectedPort, expect.any(Function));
+    expect(mockConfigureHealthRoutes).toHaveBeenCalledWith(mockExpressApp);
     expect(mockLogger.info).toHaveBeenCalledWith(expectedInfoString);
     expect(expressModule.initializers.initHelmet).toHaveBeenCalledWith(mockExpressApp);
     expect(expressModule.initializers.initLogging).toHaveBeenCalledWith(mockExpressApp);
     expect(expressModule.initializers.initBodyParser).toHaveBeenCalledWith(mockExpressApp);
+    expect(expressModule.initializers.initPassport).toHaveBeenCalledWith(mockExpressApp);
+    expect(expressModule.initializers.initCors).toHaveBeenCalledWith(mockExpressApp);
   });
 
   test('initHelmet', () => {
@@ -156,6 +171,60 @@ describe('express', () => {
     // Assert
     expect(mockApp.use).toBeCalledWith(expectedBodyParserUrlEncodedMiddleware);
     expect(mockApp.use).toBeCalledWith(expectedBodyParserJsonMiddleware);
+  });
+
+  test('initPassport', () => {
+    // Arrange
+    const mockApp = {
+      use: jest.fn(),
+    };
+
+    const mockPassport = {
+      initialize: jest.fn(() => mockPassport),
+    };
+    const mockJwtConfig = {
+      useJwtStrategy: jest.fn(),
+    };
+    const mockSamlConfig = jest.fn();
+
+    jest.mock('../../modules/health/routes/health.routes');
+    jest.mock('../../modules/auth/saml.config', () => mockSamlConfig);
+    jest.mock('../../modules/auth/jwt.config', () => mockJwtConfig);
+
+    jest.mock('passport', () => mockPassport);
+
+    const expressModule = require('../express');
+
+    // Act
+    expressModule.initializers.initPassport(mockApp);
+
+    // Assert
+    expect(mockApp.use).toHaveBeenCalledWith(mockPassport.initialize());
+    expect(mockPassport.initialize).toBeCalledWith();
+    expect(mockJwtConfig.useJwtStrategy).toBeCalled();
+    expect(mockSamlConfig).toBeCalled();
+  });
+
+  test('initCors', () => {
+    // Arrange
+    const expectedJsonCallback = 'jsonp callback';
+    const mockApp = {
+      use: jest.fn(),
+      enable: jest.fn(),
+    };
+    const mockCors = jest.fn(() => {});
+
+    jest.mock('cors', () => mockCors);
+    jest.mock('../../modules/health/routes/health.routes');
+
+    const expressModule = require('../express');
+
+    // Act
+    expressModule.initializers.initCors(mockApp);
+
+    // Assert
+    expect(mockApp.use).toHaveBeenCalledWith(mockCors());
+    expect(mockApp.enable).toBeCalledWith(expectedJsonCallback);
   });
 
   test('extract email from request header JWT - JWT present', () => {

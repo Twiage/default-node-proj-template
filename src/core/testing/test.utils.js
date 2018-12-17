@@ -12,10 +12,7 @@ exports.expectedJwtToken = expectedJwtToken;
 exports.codeForbidden = 403;
 exports.codeCreated = 201;
 
-exports.setupAppV2 = (user, twiageCase = {}, mockDatabase) => new Promise(resolve => {
-  const mockMongoDriverDatabase = { db: () => mockDatabase };
-
-  const mockMongodb = require('mongodb');
+exports.setupAppV2 = (user, twiageCase = {}) => new Promise(resolve => {
   const mockMongoose = require('mongoose');
   const mockExpress = require('../../core/express').initializers.getExpressApp();
 
@@ -23,11 +20,9 @@ exports.setupAppV2 = (user, twiageCase = {}, mockDatabase) => new Promise(resolv
   mockMongoose.set = () => {};
   mockMongoose.Types.ObjectId.isValid = () => true;
 
-  mockMongodb.MongoClient.connect = (url, options, callback) => callback(null, mockMongoDriverDatabase);
+  mockExpress.listen = (port, callback) => callback();
 
-  mockExpress.listen = (port, host, callback) => callback();
-
-  require('../../core/app').start(app => {
+  require('../../core/app').start(() => {
     const mockAccessTokenModel = mockMongoose.model('AccessToken');
     const mockToken = {
       isExpired: () => false,
@@ -45,7 +40,7 @@ exports.setupAppV2 = (user, twiageCase = {}, mockDatabase) => new Promise(resolv
 
     const mockTwiageCase = mockMongoose.model('TwiageCase');
     mockTwiageCase.findById = () => ({ exec: callback => callback(null, twiageCase) });
-    resolve(app);
+    resolve(mockExpress);
   });
 });
 

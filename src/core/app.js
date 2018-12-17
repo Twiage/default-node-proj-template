@@ -28,10 +28,11 @@ module.exports.init = function init(callback) {
     });
 };
 
-module.exports.start = function start() {
+module.exports.start = function start(callback) {
   logger.info('app starting');
   const _this = this;
   _this.init(() => {
     logger.info('app initialized');
+    if (callback) callback();
   });
 };
