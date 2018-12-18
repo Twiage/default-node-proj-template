@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-const PROJECT_NAME = 'notification';
+const PROJECT_NAME = 'default-node-proj-template';
 const HEALTH = 'health';
 const STATUS = 'status';
 

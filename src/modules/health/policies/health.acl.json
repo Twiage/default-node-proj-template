@@ -4,7 +4,7 @@
     "allows": [
       {
         "resources": [
-          "/notification/status"
+          "/default-node-proj-template/status"
         ],
         "permissions": "get"
       }
