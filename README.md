@@ -54,16 +54,18 @@ To set up CircleCI, first add environment variables in CircleCI console:
 ### AWS setup
 Create Repository with new project name in ECS
 
-Create a (Staging Cloudwatch Log Group)[https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:], naming convention: staging-default-node-proj-template
+Create a [Staging Cloudwatch Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:), naming convention: staging-default-node-proj-template
 
 Run `yarn deploy:patch`
+
+Wait until staging deploys => delete the new service created in staging ECS
 
 Create Fargate Service with new project name in ECS for each environment
 1. Choose family, should be the name of the service
 1. Service name should match project name given above.
 1. Choose number of tasks
-1. Choose VPC for apporpriate env
-1. Choose the 2 private subnets
+1. Choose VPC for appropriate env
+1. Choose the 2 private subnets (Demo only has 1 private, so use that and then a public subnet in a different AZ)
 1. Security group should be {ENV}_application-instances
 1. Disable Auto assign public IP
 1. Application Load balancer {ENV}-api-load-balancer
@@ -71,6 +73,8 @@ Create Fargate Service with new project name in ECS for each environment
 1. Listener port 443:HTTPS
 1. Create new target group with name {project name}-{env}
 1. Target group protocol should be HTTP
+1. Path pattern should be the same as health check
+1. Evaluation order should increment the evaluation order table below
 1. Confirm health check URL. (ie for the media-services project => /media/health)
 1. Uncheck Enable service discovery integration
 1. Next => Next => Create
