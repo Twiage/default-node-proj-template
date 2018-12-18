@@ -14,6 +14,11 @@ import logger from './logger';
 let expressApp;
 
 export const PORT = 3000;
+export const BEARER_HEADER_PREFIX = 'Bearer';
+export const JWT_HEADER_PREFIX = 'JWT';
+export const BEADER_TOKEN_AUTH_INFO = 'Bearer token';
+export const NO_AUTH_INFO = 'No authorization header';
+export const UNKNOWN_AUTH_INFO = 'Unknown authorization header';
 
 export default () => {
   const app = initializers.getExpressApp();
@@ -73,14 +78,16 @@ const extractEmail = request => {
   request.winstonMessageData = {};
   const jwtHeader = request.headers.authorization;
   if (!request.headers.authorization) {
-    request.winstonMessageData.authInfo = 'No authorization header';
-  } else if (jwtHeader.includes('Bearer')) {
-    request.winstonMessageData.authInfo = 'Bearer token';
-  } else {
+    request.winstonMessageData.authInfo = NO_AUTH_INFO;
+  } else if (jwtHeader.startsWith(BEARER_HEADER_PREFIX)) {
+    request.winstonMessageData.authInfo = BEADER_TOKEN_AUTH_INFO;
+  } else if (jwtHeader.startsWith(JWT_HEADER_PREFIX)) {
     const encodedJWT = jwtHeader.substring(3, jwtHeader.length - 1);
     const base64User = encodedJWT.split('.')[1];
     const base64UserCleaned = base64User.replace('-', '+').replace('_', '/');
     request.winstonMessageData.authInfo = JSON.parse(Buffer.from(base64UserCleaned, 'base64')).email;
+  } else {
+    request.winstonMessageData.authInfo = UNKNOWN_AUTH_INFO;
   }
 };
 

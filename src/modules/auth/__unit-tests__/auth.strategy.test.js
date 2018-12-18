@@ -11,7 +11,7 @@ describe('saml auth', () => {
     jest.resetModules();
   });
 
-  it('tokenAndSamlAuth, non Saml Auth - JWT and SAML strategies', () => {
+  it('jwtAuth, non Saml Auth - JWT and SAML strategies', () => {
     // Arrange
     const expectedRequest = {};
     const expectedResponse = {};
@@ -23,7 +23,7 @@ describe('saml auth', () => {
     const samlAuth = require('../auth.strategy');
 
     // Act
-    samlAuth.tokenAndSamlAuth(expectedRequest, expectedResponse, expectedNext);
+    samlAuth.jwtAuth(expectedRequest, expectedResponse, expectedNext);
 
     // Assert
     expect(mockAuthNWithJwtStrategy).toHaveBeenCalledWith(expectedRequest, expectedResponse, expectedNext);

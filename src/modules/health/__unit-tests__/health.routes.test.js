@@ -33,7 +33,7 @@ describe('health.routes', () => {
     }
 
     const mockAuthStrategy = {
-      tokenAndSamlAuth: () => {},
+      jwtAuth: () => {},
     };
 
     const mockStatusPolicy = {
@@ -51,7 +51,7 @@ describe('health.routes', () => {
     healthRoutes(dummyApp);
 
     // Assert
-    expect(mockStatusRouteV1.all).toHaveBeenCalledWith(mockAuthStrategy.tokenAndSamlAuth, mockStatusPolicy.isAllowed);
+    expect(mockStatusRouteV1.all).toHaveBeenCalledWith(mockAuthStrategy.jwtAuth, mockStatusPolicy.isAllowed);
     expect(mockHealthRouteV1.get).toHaveBeenCalledWith(mockHealthControllers.healthCheck);
     expect(mockStatusRouteV1.get).toHaveBeenCalledWith(mockHealthControllers.status);
   });

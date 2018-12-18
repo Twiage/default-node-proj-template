@@ -4,13 +4,12 @@ import passportCallback from './passport.callback';
 import authNWithJwtStrategy from './authn.jwt.strategy';
 import { API_SIGNIN_PATH_BEARER } from '../../core/urlPaths';
 
-export const JWT_STRATEGY_NAME = 'jwt';
-export const NON_SAML_STRATEGIES = [JWT_STRATEGY_NAME];
+export const JWT_STRATEGY = ['jwt'];
 export const AUTH_OPTIONS = {
   session: false,
 };
 
-export const tokenAndSamlAuth = (req, res, next) => {
+export const jwtAuth = (req, res, next) => {
   authNWithJwtStrategy(req, res, next);
 };
 

@@ -227,57 +227,76 @@ describe('express', () => {
     expect(mockApp.enable).toBeCalledWith(expectedJsonCallback);
   });
 
-  test('extract email from request header JWT - JWT present', () => {
-    // Arrange
-    const expectedAuthInfo = 'ilya.eremin@flatstack.com';
-    const expectedJWT = 'JWT eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlseWEuZXJlbWluQGZsYXRzdGFjay5jb20iLCJpYXQiOjE1MjI4NTQ3NTQsImV4cCI6MTUyMzExMzk1NCwiaXNzIjoiVHdpYWdlIn0.ePPhL-tMinEIfqBhi19X1eqSMYuTHUvlgSq6mUhL4JuH2oKJEpW6jLms04e0-j32E81y0_cctswuA5ZF7bTVmxCPsjxCBSzul2h7RyvY93KGQQHQ_H7IqVEBHwGjwF__nRZsyoK_3ARn8GuxPzG-7CoOgR2-bPrA3vqz9wQILE0Bxc_Cb2OrNANbbKFsfhcQnxnGKFzTwMGLHNoFoteWfNJ3PAr7O7AKwz5bkGllzc90fGWrvDHT_66fvdZN52KdbAhxQt56FtYQNtWzeGJqJtyjLTO1MvuvhjD1YXQsBNpYI_puyqjhBkTewntz_mql3Dlu8y1kZ9nGAhPnksdw0_O6y8e2Z6NBr6js0FZM-moQrbfZYqjlcVvMw86c-AuRMR25ouf0aTLtOwLzVVctXI-_4GfszASoxwCfDuM_6YKAtadCKc2FcGsnX5ZAsQlvZLYGm-BYnLeAevjqSARMA18d7XwYJvpSl1YlYGCiMT0U4yp0pZnMXrg7QGhnUAXi2MYX92BcCiRrDuhVr3_UUsfYpYFK5O0g9TgKnB38x8r3LKu6-80EGduUJLss5XwehtcDJGyXsMvn9bIdxwdejkovjPm24mKg5_8obCFqgkrp5qatGnaV4ORz-AjVMSSR3xTqBFhm_mq9HqBoD2jP7QZIS_lZJpKjZEpQZxbk8XE';
-    const expectedHeaders = {
-      authorization: expectedJWT,
-    };
-    const expectedRequest = createRequest({
-      headers: expectedHeaders,
+  describe('extract email', () => {
+    test('JWT present', () => {
+      // Arrange
+      const expectedAuthInfo = 'ilya.eremin@flatstack.com';
+      const expectedJWT = 'JWT eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlseWEuZXJlbWluQGZsYXRzdGFjay5jb20iLCJpYXQiOjE1MjI4NTQ3NTQsImV4cCI6MTUyMzExMzk1NCwiaXNzIjoiVHdpYWdlIn0.ePPhL-tMinEIfqBhi19X1eqSMYuTHUvlgSq6mUhL4JuH2oKJEpW6jLms04e0-j32E81y0_cctswuA5ZF7bTVmxCPsjxCBSzul2h7RyvY93KGQQHQ_H7IqVEBHwGjwF__nRZsyoK_3ARn8GuxPzG-7CoOgR2-bPrA3vqz9wQILE0Bxc_Cb2OrNANbbKFsfhcQnxnGKFzTwMGLHNoFoteWfNJ3PAr7O7AKwz5bkGllzc90fGWrvDHT_66fvdZN52KdbAhxQt56FtYQNtWzeGJqJtyjLTO1MvuvhjD1YXQsBNpYI_puyqjhBkTewntz_mql3Dlu8y1kZ9nGAhPnksdw0_O6y8e2Z6NBr6js0FZM-moQrbfZYqjlcVvMw86c-AuRMR25ouf0aTLtOwLzVVctXI-_4GfszASoxwCfDuM_6YKAtadCKc2FcGsnX5ZAsQlvZLYGm-BYnLeAevjqSARMA18d7XwYJvpSl1YlYGCiMT0U4yp0pZnMXrg7QGhnUAXi2MYX92BcCiRrDuhVr3_UUsfYpYFK5O0g9TgKnB38x8r3LKu6-80EGduUJLss5XwehtcDJGyXsMvn9bIdxwdejkovjPm24mKg5_8obCFqgkrp5qatGnaV4ORz-AjVMSSR3xTqBFhm_mq9HqBoD2jP7QZIS_lZJpKjZEpQZxbk8XE';
+      const expectedHeaders = {
+        authorization: expectedJWT,
+      };
+      const expectedRequest = createRequest({
+        headers: expectedHeaders,
+      });
+      const express = require('../express');
+
+
+      // Act
+      express.initializers.extractEmail(expectedRequest);
+
+      // Assert
+      expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
     });
-    const express = require('../express');
+
+    test('Bearer token present', () => {
+      // Arrange
+      const expectedAuthInfo = require('../express').BEADER_TOKEN_AUTH_INFO;
+      const expectedJWT = 'Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlseWEuZXJlbWluQGZsYXRzdGFjay5jb20iLCJpYXQiOjE1MjI4NTQ3NTQsImV4cCI6MTUyMzExMzk1NCwiaXNzIjoiVHdpYWdlIn0.GFTurO_TOsVOCPlKhB8BeMaa294qziaVBU3G8qsHcZc-8ca6YDzBLRlvNwG8ml6IEIrBIwETRSitD27COZesqFsR6SqG62QMtfBNZwtj6Ezw8l1Fx3UdL6huYF3Hfsvba6n1-KivZlLc4ajoykV3M7NlJDe1Io4ERSxAyoZfDN-qhpsInz0mF5ZDTeqW-N0WZaZ40AMjqylaFdaIlj0su6k7_QjswyDIJ0IJCR2qntonMZ-xwwYEkzsa7E2EZo1SSyuzzyqBx96D4rkHD6v0quD_NyCE6SCBXOr_fVjGEDgVKXadx6qZ_Aa358ZvimVr0TLP3OWlA2uzVDh0sMUlojFl-OkjoMQDVPNw9Ru2BvbuKRsH9w5-AgGtqaJKJjBhtb3tJwK3_6MoG649Lmp4OvxnqP27E86nB5pILpJ6RiJWZVNVRssmH9qma3Bpfb0wcyU_shXDoPGmlQyNtWk0WXb4Z8Ht6A0lCXHFzBT_WDF8va-K804og1YmWauvn5PSrAoKQYQiyLYvKHYnSqQBpktvXviprVjcqE8TYjouHsjzR0a9p_yKq-AWx5tU--hGOU-RIFf71Ft3FI6GXc3pQOS3Tb9LLETpPJLU0wrXc1H0MPLDV1epwXEKQ-9L_7CW98l5q8bUqlATAv3qu5YRLSAO3sXKCuuPD5Lur4ceRcY';
+      const expectedHeaders = {
+        authorization: expectedJWT,
+      };
+      const expectedRequest = createRequest({
+        headers: expectedHeaders,
+      });
+      const express = require('../express');
 
 
-    // Act
-    express.initializers.extractEmail(expectedRequest);
+      // Act
+      express.initializers.extractEmail(expectedRequest);
 
-    // Assert
-    expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
-  });
-
-  test('extract email from request header JWT - Bearer token present', () => {
-    // Arrange
-    const expectedAuthInfo = 'Bearer token';
-    const expectedJWT = 'Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlseWEuZXJlbWluQGZsYXRzdGFjay5jb20iLCJpYXQiOjE1MjI4NTQ3NTQsImV4cCI6MTUyMzExMzk1NCwiaXNzIjoiVHdpYWdlIn0.GFTurO_TOsVOCPlKhB8BeMaa294qziaVBU3G8qsHcZc-8ca6YDzBLRlvNwG8ml6IEIrBIwETRSitD27COZesqFsR6SqG62QMtfBNZwtj6Ezw8l1Fx3UdL6huYF3Hfsvba6n1-KivZlLc4ajoykV3M7NlJDe1Io4ERSxAyoZfDN-qhpsInz0mF5ZDTeqW-N0WZaZ40AMjqylaFdaIlj0su6k7_QjswyDIJ0IJCR2qntonMZ-xwwYEkzsa7E2EZo1SSyuzzyqBx96D4rkHD6v0quD_NyCE6SCBXOr_fVjGEDgVKXadx6qZ_Aa358ZvimVr0TLP3OWlA2uzVDh0sMUlojFl-OkjoMQDVPNw9Ru2BvbuKRsH9w5-AgGtqaJKJjBhtb3tJwK3_6MoG649Lmp4OvxnqP27E86nB5pILpJ6RiJWZVNVRssmH9qma3Bpfb0wcyU_shXDoPGmlQyNtWk0WXb4Z8Ht6A0lCXHFzBT_WDF8va-K804og1YmWauvn5PSrAoKQYQiyLYvKHYnSqQBpktvXviprVjcqE8TYjouHsjzR0a9p_yKq-AWx5tU--hGOU-RIFf71Ft3FI6GXc3pQOS3Tb9LLETpPJLU0wrXc1H0MPLDV1epwXEKQ-9L_7CW98l5q8bUqlATAv3qu5YRLSAO3sXKCuuPD5Lur4ceRcY';
-    const expectedHeaders = {
-      authorization: expectedJWT,
-    };
-    const expectedRequest = createRequest({
-      headers: expectedHeaders,
+      // Assert
+      expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
     });
-    const express = require('../express');
+
+    test('no authorization header present', () => {
+      // Arrange
+      const expectedAuthInfo = require('../express').NO_AUTH_INFO;
+      const expectedRequest = createRequest({});
+      const express = require('../express');
+
+      // Act
+      express.initializers.extractEmail(expectedRequest);
+
+      // Assert
+      expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
+    });
+
+    test('unknown authorization header', () => {
+      // Arrange
+      const expectedAuthInfo = require('../express').UNKNOWN_AUTH_INFO;
+      const expectedRequest = createRequest({
+        headers: {
+          Authorization: 'some other header',
+        },
+      });
+      const express = require('../express');
 
 
-    // Act
-    express.initializers.extractEmail(expectedRequest);
+      // Act
+      express.initializers.extractEmail(expectedRequest);
 
-    // Assert
-    expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
-  });
-
-  test('extract email from request header JWT - no authorization header present', () => {
-    // Arrange
-    const expectedAuthInfo = 'No authorization header';
-    const expectedRequest = createRequest({});
-    const express = require('../express');
-
-
-    // Act
-    express.initializers.extractEmail(expectedRequest);
-
-    // Assert
-    expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
+      // Assert
+      expect(expectedRequest.winstonMessageData.authInfo).toEqual(expectedAuthInfo);
+    });
   });
 });

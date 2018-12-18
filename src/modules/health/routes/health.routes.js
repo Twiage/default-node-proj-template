@@ -1,7 +1,7 @@
 'use strict';
 
 import policy from '../policies/health.policy';
-import { tokenAndSamlAuth } from '../../auth/auth.strategy';
+import { jwtAuth } from '../../auth/auth.strategy';
 import { PATH_HEALTH, PATH_STATUS } from '../../../core/urlPaths';
 import ControllerFactory from '../../../core/ControllerFactory';
 
@@ -12,6 +12,6 @@ module.exports = function (app) {
     .get(healthController.healthCheck);
 
   app.route(PATH_STATUS)
-    .all(tokenAndSamlAuth, policy.isAllowed)
+    .all(jwtAuth, policy.isAllowed)
     .get(healthController.status);
 };
