@@ -11,6 +11,11 @@ import {
   STATUS_RESPONSE_BODY,
 } from '../controllers/HealthController';
 import config from '../../../config/config';
+import logger from '../../../core/logger';
+
+test.before(() => {
+  logger.info = () => {};
+});
 
 test.serial('Health Check', async () => {
   // Arrange

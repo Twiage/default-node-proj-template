@@ -14,7 +14,10 @@ exports.codeCreated = 201;
 
 exports.setupAppV2 = (user, twiageCase = {}) => new Promise(resolve => {
   const mockMongoose = require('mongoose');
-  const mockExpress = require('../../core/express').initializers.getExpressApp();
+  const mockExpressModule = require('../../core/express');
+  mockExpressModule.initializers.initLogging = () => {};
+
+  const mockExpress = mockExpressModule.initializers.getExpressApp();
 
   mockMongoose.connect = () => new Promise(connectResolve => connectResolve());
   mockMongoose.set = () => {};
