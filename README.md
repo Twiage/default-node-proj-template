@@ -37,13 +37,13 @@ This project is set up for CircleCI, more will need to be done to set up CI/CD i
 ### CircleCI setup
 To set up CircleCI, first add environment variables in CircleCI console:
 
-`AWS_ACCESS_KEY_ID`,  (AWS Console for deployment-nonprod user)
+`AWS_ACCESS_KEY_ID`,  (AWS Console for deployment-nonprod user - entry AWS Access Key Automated Deployment)
+
+`AWS_SECRET_ACCESS_KEY`, (Same as above)
 
 `AWS_ACCOUNT_ID`, (AWS Console, in upper right corner)
 
-`AWS_SECRET_ACCESS_KEY`, (LastPass)
-
-`DATADOG_API_KEY` (DataDog->API)
+`DATADOG_API_KEY` (DataDog => Integrations => API)
 
 `CIPHER_KEY_STAGING` (Created in  `Update Environment variable file` steps above)
 
