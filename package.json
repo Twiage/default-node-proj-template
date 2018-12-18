@@ -13,7 +13,10 @@
     "lint:fix": "eslint --fix ./src",
     "test:unit": "cp .env.example .env && jest --config jest-config.json",
     "test:unit:watch": "jest --config jest-config.json --watch",
-    "test:system": "cp .env.example .env && ava"
+    "test:system": "cp .env.example .env && ava",
+    "deploy:major": "yarn version --major && git push --follow-tags",
+    "deploy:minor": "yarn version --minor && git push --follow-tags",
+    "deploy:patch": "yarn version --patch && git push --follow-tags"
   },
   "devDependencies": {
     "ava": "*",

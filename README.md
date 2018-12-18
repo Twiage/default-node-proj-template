@@ -54,6 +54,8 @@ To set up CircleCI, first add environment variables in CircleCI console:
 ### AWS setup
 Create Repository with new project name in ECS
 
+Run `yarn deploy:patch`
+
 Create Fargate Service with new project name in ECS
 1. Choose family, should be the name of the service
 1. Service name should match project name given above.
