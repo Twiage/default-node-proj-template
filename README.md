@@ -54,6 +54,8 @@ To set up CircleCI, first add environment variables in CircleCI console:
 ### AWS setup
 Create Repository with new project name in ECS
 
+Create a (Staging Cloudwatch Log Group)[https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:], naming convention: staging-default-node-proj-template
+
 Run `yarn deploy:patch`
 
 Create Fargate Service with new project name in ECS
