@@ -54,7 +54,8 @@ To set up CircleCI, first add environment variables in CircleCI console:
 ### AWS setup
 Create Repository with new project name in ECS
 
-Create a [Staging Cloudwatch Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:), naming convention: staging-default-node-proj-template
+[Create Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:) - check if they exist.
+1. Staging (or another) log group might not be created, so check if they all exist. Naming convention is {project name}-{env}
 
 Run `yarn deploy:patch`
 
@@ -83,11 +84,6 @@ If you need to add any additional rules to route to our new container
 1. Go to {ENV}-api-load-balancer => Listener tab => View/edit rules
 1. Add new rule, If : put in new path (or path pattern, ie /project-name*)
 1. Then: put forward to your new target group (named {project name}-{env})
-
-Troubleshooting
-[Create Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:) - check if they exist.
-1. Staging (or another) log group might not be created, so check if they all exist. Naming convention is {project name}-{env}
-
 
 **!!!NOTE DO NOT COMMIT UNENCRYPTED ENVIRONMENT FILES!!!**
 
