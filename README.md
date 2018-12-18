@@ -58,7 +58,7 @@ Create a (Staging Cloudwatch Log Group)[https://console.aws.amazon.com/cloudwatc
 
 Run `yarn deploy:patch`
 
-Create Fargate Service with new project name in ECS
+Create Fargate Service with new project name in ECS for each environment
 1. Choose family, should be the name of the service
 1. Service name should match project name given above.
 1. Choose number of tasks
