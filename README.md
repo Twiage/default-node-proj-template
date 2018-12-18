@@ -4,7 +4,9 @@
 [Mirror this repo into new repo](https://help.github.com/articles/duplicating-a-repository/)
 
 ## Change project name
-Replace all "default-node-proj-template" with your new project name, which needs to be url friendly
+1. Replace all "default-node-proj-template" with your new project name (i.e. media-services)
+1. Change PROJECT_URL in urlPaths.js to be the desired URL (i.e. Project: media-services, PROJECT_URL: media)
+1. Change the resources in health.acl.json to match the URL above
 
 ### Update Environment variable file
 Update the variables in .env.example
@@ -54,8 +56,7 @@ To set up CircleCI, first add environment variables in CircleCI console:
 ### AWS setup
 Create Repository with new project name in ECS
 
-[Create Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:) - check if they exist.
-1. Staging (or another) log group might not be created, so check if they all exist. Naming convention is {project name}-{env}
+[Create Staging Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:) - Naming convention is {project name}-{env}
 
 Run `yarn deploy:patch`
 
