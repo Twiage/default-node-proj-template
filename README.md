@@ -37,6 +37,8 @@ Add key to CircleCI to `{ENV} Cipher` entry in LastPass
 This project is set up for CircleCI, more will need to be done to set up CI/CD if you use another service or if you want to customize the circleCI config.
 
 ### CircleCI setup
+
+#### Enviroment Variables
 To set up CircleCI, first add environment variables in CircleCI console:
 
 `AWS_ACCESS_KEY_ID`,  (AWS Console for deployment-nonprod user - entry AWS Access Key Automated Deployment)
@@ -52,6 +54,16 @@ To set up CircleCI, first add environment variables in CircleCI console:
 `CIPHER_KEY_DEMO` (Created in  `Update Environment variable file` steps above)
 
 `CIPHER_KEY_PRODUCTION` (Created in  `Update Environment variable file` steps above)
+
+#### Slack notification
+1. Copy Slack webhook url from API: https://circleci.com/gh/Twiage/api/edit#hooks
+2. Open project settings (direct link: https://circleci.com/gh/Twiage/default-node-proj-template/edit#hooks)
+3. Paste webhook from API into "Slack Webhook URL"
+4. Enable "Override room"
+5. Type "circleci" as room name
+6. Click Save
+7. Click & Test Hook
+8. Open Slack circleci channel and make sure you see "Hello from CircleCI" message.
 
 ### AWS setup
 Create Repository with new project name in ECS
