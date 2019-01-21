@@ -8,7 +8,6 @@ const path = require('path');
 const acl = new nodeAcl(new nodeAcl.memoryBackend());
 
 const audit = require(path.resolve('./src/core/audit.js'));
-const logger = require('../../core/logger').default;
 
 class BasePolicy {
   constructor(rules) {
@@ -31,7 +30,6 @@ class BasePolicy {
   }
 
   isAllowed(req, res, next) {
-    logger.info(`Starting user authorization for user, ${req.user}`);
     audit.log(audit.operations.CHECK_ALLOWED, req, null, { path: req.route.path });
     if (!req.user) {
       audit.log(audit.operations.ACCESS_DENIED, req, null, { path: req.route.path });
