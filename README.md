@@ -66,13 +66,12 @@ To set up CircleCI, first add environment variables in CircleCI console:
 8. Open Slack circleci channel and make sure you see "Hello from CircleCI" message.
 
 ### AWS setup
-Create Repository with new project name in ECS (only need to do once)
 
-[Create Staging Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:) - Naming convention is {project name}-{env}
-
-Run `yarn deploy:patch`
-
-(staging only) Wait until service deploys in staging => delete the new service created in staging ECS
+Only need to do once in staging 
+1. Create Repository with new project name in ECS
+1. Run `yarn deploy:patch`
+1. [Create Staging Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:) - Naming convention is {project name}-{env}
+1. Wait until service deploys in staging => delete the new service created in staging ECS
 
 Create Fargate Service with new project name in ECS for each environment
 1. Choose family, should be the name of the service
