@@ -72,7 +72,7 @@ Create Repository with new project name in ECS
 
 Run `yarn deploy:patch`
 
-Wait until staging deploys => delete the new service created in staging ECS
+(staging only) Wait until service deploys in staging => delete the new service created in staging ECS
 
 Create Fargate Service with new project name in ECS for each environment
 1. Choose family, should be the name of the service
