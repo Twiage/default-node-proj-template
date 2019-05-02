@@ -79,7 +79,7 @@ Create Fargate Service with new project name in ECS for each environment
 1. Service name should match project name given above.
 1. Choose number of tasks
 1. Choose VPC for appropriate env
-1. Choose the 2 private subnets (Demo only has 1 private, so use that and then a public subnet in a different AZ)
+1. Choose the 2 private subnets
 1. Security group should be {ENV}_application-instances
 1. Disable Auto assign public IP
 1. Application Load balancer {ENV}-api-load-balancer
