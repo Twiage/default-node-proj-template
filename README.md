@@ -66,7 +66,7 @@ To set up CircleCI, first add environment variables in CircleCI console:
 8. Open Slack circleci channel and make sure you see "Hello from CircleCI" message.
 
 ### AWS setup
-Create Repository with new project name in ECS
+Create Repository with new project name in ECS (only need to do once)
 
 [Create Staging Log Group](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logs:) - Naming convention is {project name}-{env}
 
