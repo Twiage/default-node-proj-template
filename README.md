@@ -9,29 +9,14 @@
 1. Change the resources in health.acl.json to match the URL above
 
 ### Update Environment variable file
-Update the variables in .env.example
-
-Then run
-```bash
-cp .env.example .env
-```
-
-Add any additional environment variables
-
-Generate a KEY
-
-```bash
-openssl rand -base64 32
-```
-
-Use KEY from previous step to encrypt file
-
-```bash
-openssl aes-256-cbc -e -in .env -out ./.circleci/env/{stage|demo|prod} -k {KEY}
-```
-Save key in Last pass
-
-Add key to CircleCI to `{ENV} Cipher` entry in LastPass
+1. Update the variables in .env.example with the staging values in LastPass
+1. `cp .env.example .env`
+1. Generate a KEY
+	* `openssl rand -base64 32`
+1. Use KEY from previous step to encrypt file
+	* `openssl aes-256-cbc -e -in .env -out ./.circleci/env/{staging|demo|prod} -k {KEY}`
+	* `openssl aes-256-cbc -e -in .env -out ./.circleci/env/staging -k jk49aleo4p1-dksf`
+1. Save key in Last pass
 
 ## CI/CD setup
 This project is set up for CircleCI, more will need to be done to set up CI/CD if you use another service or if you want to customize the circleCI config.
@@ -56,14 +41,13 @@ To set up CircleCI, first add environment variables in CircleCI console:
 `CIPHER_KEY_PRODUCTION` (Created in  `Update Environment variable file` steps above)
 
 #### Slack notification
-1. Copy Slack webhook url from API: https://circleci.com/gh/Twiage/api/edit#hooks
-2. Open project settings (direct link: https://circleci.com/gh/Twiage/default-node-proj-template/edit#hooks)
-3. Paste webhook from API into "Slack Webhook URL"
-4. Enable "Override room"
-5. Type "circleci" as room name
-6. Click Save
-7. Click & Test Hook
-8. Open Slack circleci channel and make sure you see "Hello from CircleCI" message.
+1. Open project settings (direct link: https://circleci.com/gh/Twiage/default-node-proj-template/edit#hooks)
+1. Paste `https://circleci.com/gh/Twiage/api/edit#hooks` into "Slack Webhook URL"
+1. Enable "Override room"
+1. Type "circleci" as room name
+1. Click Save
+1. Click & Test Hook
+1. Open Slack circleci channel and make sure you see "Hello from CircleCI" message.
 
 ### AWS setup
 
