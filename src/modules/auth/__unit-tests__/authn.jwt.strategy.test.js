@@ -1,3 +1,9 @@
+import mockPassport from 'passport';
+
+import authNWithJwtStrategy, { AUTH_OPTIONS } from '../authn.jwt.strategy';
+
+jest.mock('passport');
+
 describe('authn.jwt.strategy', () => {
   it('authNWithJwtStrategy', () => {
     // Arrange
@@ -8,22 +14,14 @@ describe('authn.jwt.strategy', () => {
     const expectedAuthStrategies = ['jwt'];
 
     const mockPassportMiddleware = jest.fn();
-    const mockPassport = {
-      authenticate: jest.fn(() => mockPassportMiddleware),
-    };
-    const mockConfig = { jwt: {}, sso: { okta: {}, adventist: {} } };
 
-    jest.mock('../../../config/config', () => mockConfig);
-    jest.mock('passport', () => mockPassport);
-
-    const authNWithJwtStrategy = require('../authn.jwt.strategy');
-    const expectedAuthOptions = require('../auth.strategy').AUTH_OPTIONS;
+    mockPassport.authenticate.mockImplementation(() => mockPassportMiddleware);
 
     // Act
-    authNWithJwtStrategy.default(expectedRequest, expectedResponse, expectedNext, expectedCallback);
+    authNWithJwtStrategy(expectedRequest, expectedResponse, expectedNext, expectedCallback);
 
     // Assert
-    expect(mockPassport.authenticate).toHaveBeenCalledWith(expectedAuthStrategies, expectedAuthOptions, expectedCallback);
+    expect(mockPassport.authenticate).toHaveBeenCalledWith(expectedAuthStrategies, AUTH_OPTIONS, expectedCallback);
     expect(mockPassportMiddleware).toHaveBeenCalledWith(expectedRequest, expectedResponse, expectedNext);
   });
 });

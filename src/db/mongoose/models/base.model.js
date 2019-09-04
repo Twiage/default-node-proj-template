@@ -2,10 +2,10 @@
 
 const mongoose = require('mongoose');
 
-  
+
 const { Schema } = mongoose;
 
-  
+
 const Promise = require('bluebird');
 
 module.exports = function twiageBaseModel(schema) {
@@ -54,8 +54,6 @@ module.exports = function twiageBaseModel(schema) {
       delete ret.__v;
     },
   });
-
-  schema.set('timestamps', '{createdAt: \'created_at\'}');
 
   schema.statics.seed = function (entities) {
     const _this = this;
