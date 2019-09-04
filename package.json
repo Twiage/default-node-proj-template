@@ -48,8 +48,8 @@
     "failWithoutAssertions": false,
     "powerAssert": false,
     "require": [
-      "babel-register",
-      "babel-polyfill",
+      "@babel/register",
+      "@babel/polyfill",
       "dotenv/config"
     ],
     "babel": {
@@ -60,13 +60,13 @@
     }
   },
   "dependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-async-to-generator": "^7.5.0",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/register": "^7.5.5",
     "acl": "*",
-    "babel-core": "*",
-    "babel-plugin-root-import": "*",
-    "babel-polyfill": "*",
-    "babel-preset-env": "*",
-    "babel-preset-stage-0": "*",
-    "babel-register": "*",
     "bluebird": "*",
     "body-parser": "*",
     "compression": "*",
@@ -85,7 +85,7 @@
     "lodash": "*",
     "moment": "*",
     "mongodb": "*",
-    "mongoose": "~4.7.9",
+    "mongoose": "~5.6.12",
     "mongoose-unique-validator": "*",
     "os": "*",
     "owasp-password-strength-test": "*",
@@ -95,6 +95,6 @@
     "request": "*",
     "validator": "*",
     "winston": "*",
-    "xml2js": "*"
+    "xml2js": "0.4.22"
   }
 }

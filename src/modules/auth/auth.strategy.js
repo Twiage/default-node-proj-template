@@ -1,13 +1,8 @@
 import passport from 'passport';
 import idpList from './idp.list';
 import passportCallback from './passport.callback';
-import authNWithJwtStrategy from './authn.jwt.strategy';
+import authNWithJwtStrategy, { AUTH_OPTIONS } from './authn.jwt.strategy';
 import { API_SIGNIN_PATH_BEARER } from '../../core/urlPaths';
-
-export const JWT_STRATEGY = ['jwt'];
-export const AUTH_OPTIONS = {
-  session: false,
-};
 
 export const jwtAuth = (req, res, next) => {
   authNWithJwtStrategy(req, res, next);

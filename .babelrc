@@ -1,12 +1,18 @@
 {
   "presets": [
-    "env",
-    "stage-0"
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
   ],
   "plugins": [
-    ["transform-async-to-generator"],
-    ["babel-plugin-root-import", {
-      "rootPathSuffix": "src/modules"
-    }]
+    [
+      "@babel/plugin-transform-async-to-generator"
+    ],
+    "@babel/plugin-proposal-class-properties"
   ]
 }
