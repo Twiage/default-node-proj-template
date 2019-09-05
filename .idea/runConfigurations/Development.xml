@@ -1,5 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Development" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="$USER_HOME$/.nvm/versions/node/v10.14.1/bin/node" node-parameters="-r dotenv/config" path-to-js-file="server.babel.js" working-dir="$PROJECT_DIR$">
-    <method v="2" />
-  </configuration>
-</component>
