@@ -1,0 +1,31 @@
+{
+  "vpc-provider:account=363852383723:filter.tag:Name=Twiage Staging:region=us-east-1": {
+    "vpcId": "vpc-e9b2078e",
+    "availabilityZones": [
+      "us-east-1b",
+      "us-east-1c"
+    ],
+    "privateSubnetIds": [
+      "subnet-e5d485cf",
+      "subnet-839899f5"
+    ],
+    "privateSubnetNames": [
+      "Private"
+    ],
+    "privateSubnetRouteTableIds": [
+      "rtb-ce536ea9",
+      "rtb-ce536ea9"
+    ],
+    "publicSubnetIds": [
+      "subnet-fad485d0",
+      "subnet-809899f6"
+    ],
+    "publicSubnetNames": [
+      "Public"
+    ],
+    "publicSubnetRouteTableIds": [
+      "rtb-79536e1e",
+      "rtb-79536e1e"
+    ]
+  }
+}
