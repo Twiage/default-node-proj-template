@@ -73,6 +73,7 @@
     "config": "*",
     "cors": "*",
     "crypto": "*",
+    "dd-trace": "^0.16.0",
     "express": "*",
     "express-winston": "*",
     "generate-password": "*",

@@ -40,7 +40,7 @@ module.exports = {
     },
   },
   jwt: {
-    publicKey: process.env.JWT_PUBLIC_KEY.replace(/\\n/g, '\n'),
+    publicKey: process.env.JWT_PUBLIC_KEY ? process.env.JWT_PUBLIC_KEY.replace(/\\n/g, '\n') : 'some-key',
     privateKey: process.env.JWT_PRIVATE_KEY,
   },
   aws: {

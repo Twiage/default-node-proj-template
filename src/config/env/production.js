@@ -21,7 +21,7 @@ module.exports = {
   baseUrl: 'https://api.twiagemed.net',
   statsd: {
     mock: false,
-    host: '172.17.0.1',
+    host: '172.17.0.2',
     port: 8125,
     prefix: 'twiage.',
     suffix: '.production',
