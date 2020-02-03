@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;

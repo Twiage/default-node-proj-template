@@ -19,11 +19,11 @@
     "deploy:patch": "yarn version --patch && git push --follow-tags"
   },
   "devDependencies": {
+    "@ava/babel": "*",
     "ava": "*",
     "babel-eslint": "*",
     "babel-jest": "*",
     "chai": "*",
-    "chai-sinon": "*",
     "dotenv": "*",
     "eslint": "*",
     "eslint-config-airbnb-base": "*",
@@ -39,9 +39,9 @@
     "files": [
       "**/__system-tests__/*.js"
     ],
-    "sources": [
-      "**/*.js",
-      "!dist/**/*"
+    "ignoredByWatcher": [
+      "!**/*.js",
+      "dist/**/*"
     ],
     "concurrency": 5,
     "failFast": true,
@@ -49,7 +49,8 @@
     "powerAssert": false,
     "require": [
       "@babel/register",
-      "@babel/polyfill",
+      "core-js/stable",
+      "regenerator-runtime/runtime",
       "dotenv/config"
     ],
     "babel": {
@@ -63,7 +64,6 @@
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-async-to-generator": "^7.5.0",
-    "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
     "acl": "*",
@@ -71,9 +71,9 @@
     "body-parser": "*",
     "compression": "*",
     "config": "*",
+    "core-js": "*",
     "cors": "*",
-    "crypto": "*",
-    "dd-trace": "^0.16.0",
+    "dd-trace": "^0.17.0",
     "express": "*",
     "express-winston": "*",
     "generate-password": "*",
@@ -86,16 +86,17 @@
     "lodash": "*",
     "moment": "*",
     "mongodb": "*",
-    "mongoose": "~5.6.12",
+    "mongoose": "~5.8.11",
     "mongoose-unique-validator": "*",
     "os": "*",
     "owasp-password-strength-test": "*",
     "passport": "*",
     "passport-jwt": "*",
     "passport-saml": "*",
+    "regenerator-runtime": "*",
     "request": "*",
     "validator": "*",
     "winston": "*",
-    "xml2js": "0.4.22"
+    "xml2js": "0.4.23"
   }
 }

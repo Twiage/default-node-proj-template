@@ -1,5 +1,5 @@
 import os from 'os';
-import { version } from '../../../../package';
+import { version } from '../../../../package.json';
 
 export const HEALTHY_RESPONSE_BODY = {
   healthy: true,

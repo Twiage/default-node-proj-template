@@ -66,13 +66,13 @@ exports.setupAppWithMockCrudController = (controllerPath, routePath, methodName,
 exports.setupAppWithMockCrudControllerWithIdDetails = (
   controllerPath, routePath,
   mockMethodName, mockByIdMethodName, mockFieldName, mockFieldValue,
-  user, expectedSuccessResponse, additionalMockMethodNames
+  user, expectedSuccessResponse, additionalMockMethodNames,
 ) => {
   const expectedExpress = exports.setupApp(user);
 
   exports.mockCrudControllerWithDetails(
     controllerPath, mockMethodName, mockByIdMethodName, mockFieldName, mockFieldValue,
-    expectedSuccessResponse, additionalMockMethodNames
+    expectedSuccessResponse, additionalMockMethodNames,
   );
 
   exports.setupRoute(routePath, expectedExpress);
@@ -92,7 +92,7 @@ exports.mockCrudController = (controllerPath, mockMethodName, byIdMethodName, ex
 
 exports.mockCrudControllerWithDetails = (
   controllerPath, mockMethodName, mockByIdMethodName, mockFieldName,
-  mockFieldValue, expectedSuccessResponse, additionalMethodNames
+  mockFieldValue, expectedSuccessResponse, additionalMethodNames,
 ) => {
   let otherMethodnames = crudControllerMethodNames;
   if (additionalMethodNames) {

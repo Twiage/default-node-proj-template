@@ -3,7 +3,6 @@
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
-const crypto = require('crypto');
 
 const baseSchema = require('./base.model');
 const arrayExtensions = require('./array.model');

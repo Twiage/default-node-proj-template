@@ -4,7 +4,6 @@
  * Module dependencies
  */
 const mongoose = require('mongoose');
-const crypto = require('crypto');
 const _ = require('lodash');
 const validator = require('validator');
 const generatePassword = require('generate-password');
